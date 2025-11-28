@@ -3,379 +3,460 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SubConvert Pro - 完美版</title>
+    <title>SubConvert Pro - 萌化重制版</title>
+    <!-- 引入 Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Remix Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        gray: { 750: '#2d3748', 850: '#1a202c', 900: '#111827', 950: '#0B0F19' },
                         primary: { 500: '#3b82f6', 600: '#2563eb' }
                     },
                     animation: {
-                        'fade-in-up': 'fadeInUp 0.5s ease-out',
+                        'fade-in-up': 'fadeInUp 0.6s ease-out',
+                        'slide-in-left': 'slideInLeft 0.8s ease-out',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
                         fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideInLeft: {
+                            '0%': { opacity: '0', transform: 'translateX(-50px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
                         }
                     }
                 }
             }
         }
     </script>
+    
     <style>
-        /* 背景微调 */
+        /* 核心背景设置 */
         body {
-            background: radial-gradient(circle at top center, #1e293b 0%, #0f172a 100%);
+            margin: 0;
+            padding: 0;
             min-height: 100vh;
-            overflow-x: hidden; /* 防止图片溢出导致横向滚动条 */
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #0f172a;
+            overflow-x: hidden;
         }
 
-        /* 玻璃拟态卡片 */
-        .glass-card {
-            background-color: rgba(30, 41, 59, 0.75); /* 稍微增加不透明度，提升文字可读性 */
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-        }
-        
-        .input-box {
-            background-color: rgba(15, 23, 42, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.3s ease;
-        }
-        .input-box:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-            outline: none;
-            background-color: rgba(15, 23, 42, 0.8);
-        }
-        .input-box:hover {
-             border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .toast-enter-active, .toast-leave-active { transition: all 0.3s ease; }
-        .toast-enter-from, .toast-leave-to { opacity: 0; transform: translateY(-20px) translateX(-50%); }
-
-        /* 背景角色 - 优化版 */
-        .bg-character {
+        /* 背景层：去除模糊，保持清晰 */
+        .bg-layer {
             position: fixed;
-            bottom: 0;
-            height: 85vh; /* 保持较高的高度 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-image: url('https://img.qlqqs.com/b/2025/11/28/692964b43686e.png');
+            background-size: cover;
+            background-position: center top; /* 聚焦图片顶部/中心，避免切头 */
+            background-repeat: no-repeat;
+            filter: brightness(0.9); /* 稍微降低一点点亮度防止刺眼，但不模糊 */
+        }
+
+        /* 装饰层：轻微渐变，保证文字可读性 */
+        .overlay-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            /* 从左到右渐变，右侧稍微黑一点，因为右侧有文字面板 */
+            background: linear-gradient(to right, rgba(15, 23, 42, 0.1), rgba(15, 23, 42, 0.5)); 
+        }
+
+        /* 左侧角色图片样式 - 现在背景清晰了，这个立绘可以作为一种"浮出"效果保留，或者隐藏，
+           既然您说"这样更好看了"，我保留它，增强一点立体感 */
+        .character-img {
+            max-height: 90vh;
             width: auto;
-            max-width: 28vw; /* 限制最大宽度，防止覆盖中间内容 */
             object-fit: contain;
-            z-index: 0; 
-            pointer-events: none;
-            opacity: 1.0; /* 100% 可见，不透明 */
-            filter: drop-shadow(0 0 15px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 0 25px rgba(59, 130, 246, 0.4));
+            transition: transform 0.3s ease;
+        }
+        .character-img:hover {
+            transform: scale(1.02);
+        }
+
+        /* 毛玻璃卡片样式优化 - 因为背景变清晰了，卡片需要更强的模糊来保证内容可读 */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75); /* 背景色稍微加深 */
+            backdrop-filter: blur(25px); /* 磨砂感加重 */
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        .input-glass {
+            background: rgba(0, 0, 0, 0.4); /* 输入框背景加深 */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
             transition: all 0.3s ease;
         }
-
-        .bg-character.left-0 {
-            left: 0;
-            transform-origin: bottom left;
-        }
-        
-        .bg-character.right-0 {
-            right: 0;
-            transform-origin: bottom right;
+        .input-glass:focus {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3);
+            outline: none;
         }
 
-        /* 响应式调整：屏幕变窄时缩小图片，而不是隐藏 */
-        @media (max-width: 1400px) {
-            .bg-character {
-                height: 70vh;
-                max-width: 20vw;
-            }
+        ::-webkit-scrollbar {
+            width: 6px;
         }
-
-        /* 在移动端实在放不下时才降低存在感 */
-        @media (max-width: 1024px) {
-            .bg-character {
-                opacity: 0.15; /* 变成背景纹理，避免干扰操作 */
-                height: 50vh;
-            }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.4);
         }
     </style>
 </head>
-<body class="text-slate-200 font-sans selection:bg-blue-500 selection:text-white">
+<body class="text-slate-200">
 
-<!-- 左侧女孩：水平翻转，看向中间 -->
-<img src="【恋风】20250830181643.jpg" alt="Background Girl Left" class="bg-character left-0" style="transform: scaleX(-1);">
+    <!-- 背景层 -->
+    <div class="bg-layer"></div>
+    <div class="overlay-layer"></div>
 
-<!-- 右侧女孩：正常方向，看向中间 -->
-<img src="【恋风】20250830181643.jpg" alt="Background Girl Right" class="bg-character right-0">
-
-
-<!-- 主内容容器 -->
-<!-- 修改为 max-w-4xl (约896px)，比之前的 5xl 更窄，确保左右两侧留白给女孩 -->
-<div id="app" class="max-w-4xl mx-auto relative z-10 py-10 px-4 animate-fade-in-up">
-    
-    <transition name="toast">
-        <div v-if="toast.show" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 flex items-center gap-2 px-6 py-3 rounded-full bg-blue-600 shadow-2xl shadow-blue-500/30 text-white text-sm font-bold border border-white/20">
-            <i class="ri-checkbox-circle-fill text-lg"></i>
-            <span>{{ toast.msg }}</span>
-        </div>
-    </transition>
-
-    <header class="flex items-center justify-between mb-8 px-2">
-        <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-500/30 ring-2 ring-white/10">
-                <i class="ri-rocket-2-fill text-white text-3xl"></i>
-            </div>
-            <div>
-                <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-md">SubConvert <span class="text-blue-400">Pro</span></h1>
-                <p class="text-xs text-blue-200/80 font-medium tracking-wider uppercase">Professional Tool</p>
-            </div>
-        </div>
-        <div class="flex gap-2">
-             <span class="px-4 py-1.5 rounded-full bg-slate-800/80 text-blue-400 text-xs font-bold border border-blue-500/30 backdrop-blur-md flex items-center gap-1 shadow-lg">
-                <i class="ri-cpu-line"></i> v1.mk Core
-             </span>
-        </div>
-    </header>
-
-    <div class="grid grid-cols-1 gap-6">
-        <!-- 调整为单列布局或者更加紧凑的布局，这里保持原结构但宽度变窄了 -->
+    <div id="app" class="relative min-h-screen flex items-center justify-center p-4 lg:p-8">
         
-        <div class="space-y-6">
-            <!-- 订阅链接输入 -->
-            <div class="glass-card rounded-3xl p-1 shadow-2xl transition-all hover:border-blue-500/30">
-                <div class="p-4 border-b border-white/5 flex justify-between items-center bg-slate-900/20 rounded-t-3xl">
-                    <label class="text-sm font-bold text-blue-400 flex items-center gap-2">
-                        <i class="ri-link-m text-lg"></i> 订阅链接 (必填)
-                    </label>
-                    <button @click="form.url=''" class="px-3 py-1 rounded-full text-xs text-slate-400 hover:text-white hover:bg-red-500/20 transition-all flex items-center gap-1">
-                        <i class="ri-delete-bin-line"></i> 清空
-                    </button>
-                </div>
-                <textarea v-model="form.url" class="w-full h-32 bg-transparent p-5 text-sm text-slate-200 resize-none outline-none placeholder-slate-500 font-mono leading-relaxed" placeholder="在此粘贴您的机场订阅链接..."></textarea>
+        <!-- 全局 Toast -->
+        <transition enter-active-class="transition ease-out duration-300" enter-from-class="opacity-0 translate-y-[-20px]" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-200" leave-from-class="opacity-100" leave-to-class="opacity-0 translate-y-[-20px]">
+            <div v-if="toast.show" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-[100] flex items-center gap-2 px-6 py-3 rounded-full bg-blue-600/90 backdrop-blur-md shadow-2xl shadow-blue-500/30 text-white text-sm font-bold border border-white/20">
+                <i class="ri-checkbox-circle-fill text-lg"></i>
+                <span>{{ toast.msg }}</span>
             </div>
+        </transition>
 
-            <!-- 核心配置区 -->
-            <div class="glass-card rounded-3xl p-6 shadow-xl space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">客户端类型</label>
-                        <div class="relative group">
-                            <select v-model="form.target" class="w-full h-12 rounded-xl px-4 text-sm input-box appearance-none cursor-pointer font-medium text-white">
-                                <option value="clash">Clash (推荐)</option>
-                                <option value="clashr">ClashR</option>
-                                <option value="v2ray">V2Ray</option>
-                                <option value="surge&ver=4">Surge 4+</option>
-                                <option value="loon">Loon</option>
-                                <option value="ss">Shadowsocks</option>
-                                <option value="surfboard">Surfboard</option>
-                                <option value="quanx">Quantumult X</option>
-                            </select>
-                            <i class="ri-arrow-down-s-line absolute right-4 top-3.5 text-slate-400 pointer-events-none text-lg"></i>
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">后端服务</label>
-                        <div class="relative group">
-                            <select v-model="form.backend" class="w-full h-12 rounded-xl px-4 text-sm input-box appearance-none cursor-pointer font-medium text-slate-300">
-                                <option v-for="b in backends" :key="b.url" :value="b.url">{{ b.name }}</option>
-                            </select>
-                            <i class="ri-server-line absolute right-4 top-3.5 text-slate-400 pointer-events-none text-lg"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">远程配置 (规则)</label>
-                    <div class="relative group">
-                        <select v-model="form.config" class="w-full h-12 rounded-xl px-4 text-sm input-box appearance-none cursor-pointer font-mono text-slate-300 truncate pr-10">
-                            <option v-for="c in configs" :key="c.url" :value="c.url">{{ c.name }}</option>
-                        </select>
-                        <i class="ri-git-repository-commits-line absolute right-4 top-3.5 text-slate-400 pointer-events-none text-lg"></i>
-                    </div>
+        <!-- 主布局容器 -->
+        <div class="container mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center h-full">
+            
+            <!-- 左侧：保留立绘展示，作为前景强调 -->
+            <div class="hidden lg:flex lg:col-span-5 h-full flex-col justify-center items-center animate-slide-in-left relative">
+                <!-- 角色图片 -->
+                <img src="https://img.qlqqs.com/b/2025/11/28/692964b43686e.png" alt="Character" class="character-img rounded-2xl">
+                
+                <div class="mt-8 text-center">
+                    <h2 class="text-4xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] tracking-wider">SubConvert <span class="text-blue-400">Pro</span></h2>
+                    <p class="text-blue-200/80 font-medium tracking-[0.2em] mt-2 uppercase text-sm">Universal Subscription Converter</p>
                 </div>
             </div>
 
-            <!-- 高级选项 - 折叠式设计节省空间 -->
-            <div class="glass-card rounded-3xl overflow-hidden">
-                <button @click="showAdvanced = !showAdvanced" class="w-full p-4 flex items-center justify-between bg-slate-800/30 hover:bg-slate-800/50 transition-colors">
-                    <span class="font-bold text-slate-200 flex items-center gap-2"><i class="ri-settings-4-line text-blue-500"></i> 高级选项 & 文件名</span>
-                    <i :class="showAdvanced ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line'" class="text-slate-400 text-lg"></i>
-                </button>
-                <div v-show="showAdvanced" class="p-6 space-y-6 border-t border-white/5 animate-fade-in-up">
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        <div v-for="opt in options" :key="opt.key" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/40 border border-white/5 cursor-pointer hover:border-blue-500/50 transition-all" @click="form[opt.key] = !form[opt.key]">
-                            <span class="text-xs font-medium text-slate-300">{{ opt.label }}</span>
-                            <div :class="form[opt.key] ? 'bg-blue-500' : 'bg-slate-700'" class="w-8 h-4 rounded-full relative transition-colors">
-                                <div :class="form[opt.key] ? 'translate-x-4' : 'translate-x-0.5'" class="absolute top-0.5 w-3 h-3 bg-white rounded-full transition-transform"></div>
+            <!-- 右侧：功能操作区 -->
+            <div class="col-span-1 lg:col-span-7 w-full animate-fade-in-up">
+                
+                <div class="lg:hidden text-center mb-6">
+                    <h1 class="text-3xl font-black text-white drop-shadow-lg">SubConvert <span class="text-blue-400">Pro</span></h1>
+                </div>
+
+                <!-- 主卡片 -->
+                <div class="glass-panel rounded-3xl p-6 md:p-8 w-full max-w-3xl mx-auto">
+                    
+                    <!-- 顶部状态栏 -->
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+                         <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                                <i class="ri-settings-5-fill text-white text-xl animate-spin-slow"></i>
+                            </div>
+                            <span class="font-bold text-lg text-white">配置面板</span>
+                         </div>
+                         <span class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-bold border border-blue-500/20 flex items-center gap-1">
+                            <i class="ri-cpu-line"></i> v1.mk Core
+                         </span>
+                    </div>
+
+                    <!-- 订阅链接输入 -->
+                    <div class="space-y-2 mb-6 group">
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm font-bold text-blue-300 flex items-center gap-2">
+                                <i class="ri-links-line"></i> 订阅链接 (必填)
+                            </label>
+                            <button @click="form.url=''" class="text-xs text-slate-400 hover:text-red-400 transition-colors flex items-center gap-1 opacity-0 group-hover:opacity-100">
+                                <i class="ri-delete-bin-line"></i> 清空
+                            </button>
+                        </div>
+                        <textarea v-model="form.url" class="w-full h-28 input-glass rounded-xl p-4 text-sm resize-none font-mono placeholder-slate-500/70" placeholder="在此粘贴您的机场订阅链接..."></textarea>
+                    </div>
+
+                    <!-- 选项网格 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+                        <!-- 客户端 -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-400 ml-1 uppercase">客户端类型</label>
+                            <div class="relative">
+                                <select v-model="form.target" class="w-full h-11 input-glass rounded-xl px-4 text-sm appearance-none cursor-pointer font-medium hover:bg-white/5">
+                                    <option value="clash">Clash (推荐)</option>
+                                    <option value="clashr">ClashR</option>
+                                    <option value="v2ray">V2Ray</option>
+                                    <option value="surge&ver=4">Surge 4+</option>
+                                    <option value="loon">Loon</option>
+                                    <option value="ss">Shadowsocks</option>
+                                    <option value="surfboard">Surfboard</option>
+                                    <option value="quanx">Quantumult X</option>
+                                </select>
+                                <i class="ri-arrow-down-s-line absolute right-3 top-3 text-slate-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <!-- 后端 -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-400 ml-1 uppercase">后端服务</label>
+                            <div class="relative">
+                                <select v-model="form.backend" class="w-full h-11 input-glass rounded-xl px-4 text-sm appearance-none cursor-pointer font-medium hover:bg-white/5">
+                                    <option v-for="b in backends" :key="b.url" :value="b.url">{{ b.name }}</option>
+                                </select>
+                                <i class="ri-server-line absolute right-3 top-3 text-slate-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <!-- 远程配置 -->
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label class="text-xs font-bold text-slate-400 ml-1 uppercase">远程配置 (规则)</label>
+                            <div class="relative">
+                                <select v-model="form.config" class="w-full h-11 input-glass rounded-xl px-4 text-sm appearance-none cursor-pointer font-mono text-slate-300 hover:bg-white/5 truncate pr-8">
+                                    <option v-for="c in configs" :key="c.url" :value="c.url">{{ c.name }}</option>
+                                </select>
+                                <i class="ri-file-list-3-line absolute right-3 top-3 text-slate-400 pointer-events-none"></i>
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-2">自定义文件名</label>
-                        <input v-model="form.filename" type="text" placeholder="默认为空" class="w-full h-10 rounded-lg px-3 text-sm input-box">
-                    </div>
-                </div>
-            </div>
 
-            <!-- 生成按钮 -->
-            <button @click="generate" class="w-full py-5 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:scale-[1.01] active:scale-[0.99] text-white font-bold rounded-3xl shadow-2xl shadow-blue-500/30 transition-all flex items-center justify-center gap-3 text-xl ring-2 ring-white/10">
-                <i class="ri-flashlight-fill animate-pulse"></i> 一键极速转换
-            </button>
-            
-            <!-- 结果区域 -->
-            <div v-if="resultUrl" class="glass-card rounded-3xl p-6 border-l-4 border-blue-500 animate-fade-in-up">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-lg text-white flex items-center gap-2">
-                        <i class="ri-check-double-line text-green-400 text-xl"></i> 生成成功
-                    </h3>
-                    <a :href="resultUrl" target="_blank" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-full font-bold transition-colors shadow-lg shadow-blue-500/20">
-                        <i class="ri-install-line"></i> 一键导入
-                    </a>
-                </div>
-
-                <div class="space-y-4">
-                    <!-- 长链接 -->
-                    <div class="relative">
-                        <input type="text" readonly :value="resultUrl" class="w-full bg-[#0b0f19]/80 border border-white/10 rounded-xl p-3 pr-20 text-xs text-slate-400 font-mono outline-none focus:border-blue-500/50">
-                        <button @click="copy(resultUrl)" class="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg font-bold transition-colors">复制</button>
-                    </div>
-
-                    <!-- 短链接区域 -->
-                    <div class="flex flex-col md:flex-row gap-3">
-                        <button @click="getShortUrl" :disabled="loadingShort || shortUrl" class="px-5 py-3 bg-slate-700/80 hover:bg-blue-600 disabled:opacity-50 text-white text-sm font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shrink-0">
-                            <i v-if="loadingShort" class="ri-loader-4-line animate-spin"></i>
-                            <i v-else class="ri-link-m"></i>
-                            {{ shortUrl ? '已生成' : '转短链' }}
+                    <!-- 高级选项 (折叠面板) -->
+                    <div class="mb-6 border border-white/5 rounded-2xl bg-black/20 overflow-hidden">
+                        <button @click="showAdvanced = !showAdvanced" class="w-full p-3 px-4 flex items-center justify-between bg-white/5 hover:bg-white/10 transition-colors">
+                            <span class="text-sm font-bold text-slate-300 flex items-center gap-2">
+                                <i class="ri-equalizer-line text-blue-400"></i> 高级选项 & 文件名
+                            </span>
+                            <i :class="showAdvanced ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line'" class="text-slate-400"></i>
                         </button>
-                        <div v-if="shortUrl" class="flex-1 relative animate-fade-in-up">
-                            <input type="text" readonly :value="shortUrl" class="w-full h-full bg-blue-500/10 border border-blue-500/30 rounded-xl p-3 pr-24 text-sm text-blue-400 font-bold outline-none font-mono">
-                            <button @click="copy(shortUrl)" class="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition-colors shadow-lg shadow-blue-500/20">
-                                <i class="ri-file-copy-2-line"></i> 复制
-                            </button>
+                        
+                        <div v-show="showAdvanced" class="p-4 space-y-4 border-t border-white/5">
+                            <!-- 开关选项 -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                <div v-for="opt in options" :key="opt.key" 
+                                     class="flex items-center justify-between p-2.5 rounded-lg border border-white/5 cursor-pointer transition-all hover:bg-white/5"
+                                     :class="form[opt.key] ? 'bg-blue-500/20 border-blue-500/30' : 'bg-transparent'"
+                                     @click="form[opt.key] = !form[opt.key]">
+                                    <span class="text-xs font-medium text-slate-300">{{ opt.label }}</span>
+                                    <div :class="form[opt.key] ? 'bg-blue-500' : 'bg-slate-600'" class="w-8 h-4 rounded-full relative transition-colors">
+                                        <div :class="form[opt.key] ? 'translate-x-4' : 'translate-x-0.5'" class="absolute top-0.5 w-3 h-3 bg-white rounded-full transition-transform shadow-sm"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 文件名输入 -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1.5 ml-1">自定义文件名</label>
+                                <input v-model="form.filename" type="text" placeholder="默认为空，选填" class="w-full h-9 rounded-lg px-3 text-sm input-glass">
+                            </div>
                         </div>
                     </div>
+
+                    <!-- 转换按钮 -->
+                    <button @click="generate" class="w-full py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 bg-[length:200%_auto] hover:bg-right transition-all duration-500 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/20 flex items-center justify-center gap-2 text-lg group ring-1 ring-white/20 transform hover:-translate-y-0.5 active:translate-y-0">
+                        <i class="ri-flashlight-fill group-hover:animate-pulse"></i> 一键极速转换
+                    </button>
+
+                    <!-- 结果区域 -->
+                    <div v-if="resultUrl" class="mt-6 pt-6 border-t border-white/10 animate-fade-in-up">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-bold text-white flex items-center gap-2">
+                                <i class="ri-check-double-line text-green-400"></i> 生成成功
+                            </h3>
+                            <a :href="resultUrl" target="_blank" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg transition-colors border border-white/10">
+                                立即导入 <i class="ri-external-link-line ml-1"></i>
+                            </a>
+                        </div>
+
+                        <div class="space-y-3">
+                            <!-- 长链接 -->
+                            <div class="relative group">
+                                <input type="text" readonly :value="resultUrl" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 pr-20 text-xs text-slate-400 font-mono outline-none focus:border-blue-500/50 transition-colors">
+                                <button @click="copy(resultUrl)" class="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-white/10 hover:bg-blue-600 text-slate-300 hover:text-white text-xs rounded-lg font-bold transition-all">复制</button>
+                            </div>
+
+                            <!-- 短链接 -->
+                            <div class="flex gap-2">
+                                <button @click="getShortUrl" :disabled="loadingShort || shortUrl" class="px-4 py-2 bg-slate-700/50 hover:bg-blue-600/80 disabled:opacity-50 text-white text-sm rounded-xl transition-all flex items-center justify-center gap-2 border border-white/10 shrink-0 min-w-[100px]">
+                                    <i v-if="loadingShort" class="ri-loader-4-line animate-spin"></i>
+                                    <i v-else class="ri-link-m"></i>
+                                    {{ shortUrl ? '已生成' : '转短链' }}
+                                </button>
+                                
+                                <div v-if="shortUrl" class="flex-1 relative animate-fade-in-up">
+                                    <input type="text" readonly :value="shortUrl" class="w-full h-full bg-blue-500/10 border border-blue-500/30 rounded-xl p-3 pr-20 text-sm text-blue-300 font-mono font-bold outline-none">
+                                    <button @click="copy(shortUrl)" class="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition-colors shadow-lg shadow-blue-500/20">
+                                        复制
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="text-center mt-6 text-slate-500/60 text-xs">
+                    <p>&copy; 2025 SubConvert Pro. Powered by Vue & Tailwind.</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    const { createApp, ref, reactive } = Vue
+    <script>
+        const { createApp, ref, reactive } = Vue
 
-    createApp({
-        setup() {
-            const showAdvanced = ref(true) // 默认展开
+        createApp({
+            setup() {
+                const showAdvanced = ref(true)
 
-            // 锁定配置
-            const backends = [
-                { name: '默认: 肥羊增强型 (v1.mk)', url: 'https://url.v1.mk/sub?' },
-                { name: '备用1: 周润发HK后端', url: 'https://subapi.zrfme.com/sub?' },
-                { name: '备用2: 肥羊备用 (d1.mk)', url: 'https://sub.d1.mk/sub?' }
-            ]
-            const configs = [
-                { name: '定制: 不良林 无DNS泄露', url: 'https://cf.buliang0.cf/clash-rules/nodnsleak.ini' },
-                { name: 'ACL4SSR_Online_Full', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full.ini' },
-                { name: '无 (仅转换格式)', url: '' }
-            ]
+                // 核心配置
+                const backends = [
+                    { name: '默认: 肥羊增强型 (v1.mk)', url: 'https://url.v1.mk/sub?' },
+                    { name: '备用1: 周润发HK后端', url: 'https://subapi.zrfme.com/sub?' },
+                    { name: '备用2: 肥羊备用 (d1.mk)', url: 'https://sub.d1.mk/sub?' }
+                ]
+                const configs = [
+                    { name: '定制: 不良林 无DNS泄露', url: 'https://cf.buliang0.cf/clash-rules/nodnsleak.ini' },
+                    { name: 'ACL4SSR_Online_Full', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full.ini' },
+                    { name: 'ACL4SSR_Online_Mini', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Mini.ini' },
+                    { name: '基础配置 (仅基础分流)', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online.ini' },
+                    { name: '无 (仅转换格式)', url: '' }
+                ]
 
-            const form = reactive({
-                url: '', target: 'clash', backend: backends[0].url, config: configs[0].url,
-                emoji: true, udp: false, scv: false, nodeList: false, fdn: false, filename: ''
-            })
-            
-            const options = [
-                { key: 'emoji', label: 'Emoji' },
-                { key: 'udp', label: 'UDP转发' },
-                { key: 'scv', label: '跳过证书' },
-                { key: 'nodeList', label: 'Node List' },
-                { key: 'fdn', label: '过滤非法' }
-            ]
-
-            const resultUrl = ref('')
-            const shortUrl = ref('')
-            const loadingShort = ref(false)
-            
-            const toast = reactive({ show: false, msg: '' })
-
-            const generate = () => {
-                if (!form.url) return showToast('请先输入订阅链接！')
+                const form = reactive({
+                    url: '', target: 'clash', backend: backends[0].url, config: configs[0].url,
+                    emoji: true, udp: false, scv: false, nodeList: false, fdn: false, filename: ''
+                })
                 
-                shortUrl.value = '' 
-                const params = new URLSearchParams()
-                params.append('target', form.target)
-                params.append('url', form.url.trim())
-                params.append('emoji', form.emoji)
-                params.append('udp', form.udp)
-                params.append('scv', form.scv)
-                params.append('list', form.nodeList)
-                params.append('fdn', form.fdn)
-                if (form.config) params.append('config', form.config)
-                if (form.filename) params.append('filename', form.filename)
+                const options = [
+                    { key: 'emoji', label: 'Emoji' },
+                    { key: 'udp', label: 'UDP转发' },
+                    { key: 'scv', label: '跳过证书' },
+                    { key: 'nodeList', label: '节点列表' },
+                    { key: 'fdn', label: '过滤非法' }
+                ]
 
-                let baseUrl = form.backend
-                if (!baseUrl.includes('?')) baseUrl += '?'
-                else if (!baseUrl.endsWith('?') && !baseUrl.endsWith('&')) baseUrl += '&'
+                const resultUrl = ref('')
+                const shortUrl = ref('')
+                const loadingShort = ref(false)
+                
+                const toast = reactive({ show: false, msg: '' })
 
-                resultUrl.value = baseUrl + params.toString()
-                setTimeout(() => {
-                    const resultEl = document.querySelector('.animate-fade-in-up')
-                    if (resultEl) resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-                }, 100)
-            }
-
-            const getShortUrl = async () => {
-                if (!resultUrl.value) return
-                loadingShort.value = true
-                try {
-                    let apiUrl = `https://url.v1.mk/short?longUrl=${encodeURIComponent(btoa(resultUrl.value))}`
-                    let res = await fetch(apiUrl)
-                    let data = await res.json()
+                const generate = () => {
+                    if (!form.url) return showToast('请先输入订阅链接！')
                     
-                    if (data.Code === 1 && data.ShortUrl) {
-                        shortUrl.value = data.ShortUrl
-                        showToast('短链生成成功')
-                    } else {
-                        apiUrl = `https://url.v1.mk/short?longUrl=${encodeURIComponent(resultUrl.value)}`
-                        res = await fetch(apiUrl)
-                        data = await res.json()
+                    shortUrl.value = '' 
+                    const params = new URLSearchParams()
+                    params.append('target', form.target)
+                    params.append('url', form.url.trim())
+                    params.append('emoji', form.emoji)
+                    params.append('udp', form.udp)
+                    params.append('scv', form.scv)
+                    params.append('list', form.nodeList)
+                    params.append('fdn', form.fdn)
+                    if (form.config) params.append('config', form.config)
+                    if (form.filename) params.append('filename', form.filename)
+
+                    let baseUrl = form.backend
+                    if (!baseUrl.includes('?')) baseUrl += '?'
+                    else if (!baseUrl.endsWith('?') && !baseUrl.endsWith('&')) baseUrl += '&'
+
+                    resultUrl.value = baseUrl + params.toString()
+                    // 滚动到底部
+                    setTimeout(() => {
+                        const resultEl = document.querySelector('.glass-panel')
+                        if (resultEl) {
+                            // 稍微滚动一下让用户看到结果
+                        }
+                    }, 100)
+                }
+
+                const getShortUrl = async () => {
+                    if (!resultUrl.value) return
+                    loadingShort.value = true
+                    try {
+                        let apiUrl = `https://url.v1.mk/short?longUrl=${encodeURIComponent(btoa(resultUrl.value))}`
+                        let res = await fetch(apiUrl)
+                        let data = await res.json()
+                        
                         if (data.Code === 1 && data.ShortUrl) {
                             shortUrl.value = data.ShortUrl
                             showToast('短链生成成功')
                         } else {
-                            showToast('生成失败: ' + data.Message)
+                            // 备用尝试：不使用 btoa
+                            apiUrl = `https://url.v1.mk/short?longUrl=${encodeURIComponent(resultUrl.value)}`
+                            res = await fetch(apiUrl)
+                            data = await res.json()
+                            if (data.Code === 1 && data.ShortUrl) {
+                                shortUrl.value = data.ShortUrl
+                                showToast('短链生成成功')
+                            } else {
+                                showToast('生成失败: ' + data.Message)
+                            }
                         }
+                    } catch (e) {
+                        showToast('网络请求失败')
+                    } finally {
+                        loadingShort.value = false
                     }
-                } catch (e) {
-                    showToast('网络请求失败')
-                } finally {
-                    loadingShort.value = false
                 }
-            }
 
-            const copy = (text) => {
-                if(!text) return
-                navigator.clipboard.writeText(text).then(() => {
-                    showToast('已复制到剪贴板')
-                }).catch(() => {
-                    showToast('复制失败，请手动复制')
-                })
-            }
+                const copy = (text) => {
+                    if(!text) return
+                    // 尝试使用 Clipboard API
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(text).then(() => {
+                            showToast('已复制到剪贴板')
+                        }).catch(() => {
+                            fallbackCopy(text)
+                        })
+                    } else {
+                        fallbackCopy(text)
+                    }
+                }
 
-            const showToast = (msg) => {
-                toast.msg = msg
-                toast.show = true
-                setTimeout(() => toast.show = false, 2000)
-            }
+                // 兼容性复制方案
+                const fallbackCopy = (text) => {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-9999px";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        showToast('已复制到剪贴板')
+                    } catch (err) {
+                        showToast('复制失败，请手动复制')
+                    }
+                    document.body.removeChild(textArea);
+                }
 
-            return { backends, configs, form, options, resultUrl, shortUrl, loadingShort, toast, generate, getShortUrl, copy, showAdvanced }
-        }
-    }).mount('#app')
-</script>
+                const showToast = (msg) => {
+                    toast.msg = msg
+                    toast.show = true
+                    setTimeout(() => toast.show = false, 2000)
+                }
+
+                return { backends, configs, form, options, resultUrl, shortUrl, loadingShort, toast, generate, getShortUrl, copy, showAdvanced }
+            }
+        }).mount('#app')
+    </script>
 </body>
 </html>
