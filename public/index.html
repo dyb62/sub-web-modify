@@ -3,222 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SUB-WEB MATRIX</title>
+    <title>SubConvert Pro - 终极版</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        cyber: {
-                            black: '#050505',
-                            dark: '#0a0a0a',
-                            panel: '#111111',
-                            border: '#333333',
-                            primary: '#00ff41', // 黑客绿
-                            accent: '#008F11',
-                            error: '#ff003c'
+                        // 采用更护眼的高级灰蓝
+                        gray: {
+                            750: '#2d3748',
+                            850: '#1a202c',
+                            900: '#111827',
+                            950: '#0B0F19' 
+                        },
+                        primary: {
+                            500: '#3b82f6', // 经典的蓝色
+                            600: '#2563eb'
                         }
-                    },
-                    fontFamily: {
-                        mono: ['"JetBrains Mono"', 'monospace']
                     }
                 }
             }
         }
     </script>
     <style>
-        body {
-            background-color: #000;
-            color: #00ff41;
-            font-family: 'JetBrains Mono', monospace;
-            background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px;
+        /* 玻璃拟态效果 */
+        .glass-card {
+            background-color: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        
-        /* 霓虹发光效果 */
-        .neon-border {
-            box-shadow: 0 0 5px rgba(0, 255, 65, 0.2), inset 0 0 10px rgba(0, 255, 65, 0.05);
+        .input-box {
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s;
         }
-        .neon-border:focus-within {
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.4), inset 0 0 20px rgba(0, 255, 65, 0.1);
-            border-color: #00ff41;
-        }
-        
-        /* 自定义滚动条 */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb { background: #333; border: 1px solid #000; }
-        ::-webkit-scrollbar-thumb:hover { background: #00ff41; }
-
-        .glitch-text {
-            text-shadow: 2px 0 #008F11, -2px 0 #003300;
+        .input-box:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+            outline: none;
         }
     </style>
 </head>
-<body class="min-h-screen p-4 flex flex-col items-center justify-center">
+<body class="bg-[#0f172a] text-slate-200 min-h-screen py-10 px-4 font-sans selection:bg-blue-500 selection:text-white">
 
-<div id="app" class="w-full max-w-6xl">
+<div id="app" class="max-w-5xl mx-auto">
     
-    <header class="flex justify-between items-end mb-6 border-b border-cyber-border pb-4">
-        <div>
-            <h1 class="text-3xl font-bold glitch-text tracking-tighter">SUB-WEB <span class="text-white">MATRIX</span></h1>
-            <p class="text-xs text-cyber-accent mt-1 opacity-70">/// SYSTEM_READY /// v3.0.1_STABLE</p>
-        </div>
-        <div class="text-right">
-            <div class="text-xs text-gray-500">BACKEND_STATUS</div>
-            <div class="flex items-center justify-end gap-2">
-                <span class="w-2 h-2 bg-cyber-primary rounded-full animate-pulse"></span>
-                <span class="text-sm font-bold">ONLINE</span>
+    <header class="flex items-center justify-between mb-8 px-2">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <i class="ri-rocket-2-fill text-white text-xl"></i>
             </div>
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-white">SubConvert <span class="text-blue-400">Pro</span></h1>
+                <p class="text-xs text-slate-400">专业订阅转换工具</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+             <span class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-medium border border-blue-500/20">
+                v1.mk 核心
+             </span>
         </div>
     </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <div class="lg:col-span-2 flex flex-col gap-6">
+        <div class="lg:col-span-8 space-y-6">
             
-            <div class="bg-cyber-panel border border-cyber-border p-1 neon-border relative group">
-                <div class="absolute top-0 left-0 bg-cyber-primary text-black text-xs px-2 py-0.5 font-bold">INPUT_SOURCE</div>
+            <div class="glass-card rounded-2xl p-1 shadow-xl">
+                <div class="p-4 border-b border-white/5 flex justify-between items-center">
+                    <label class="text-sm font-semibold text-blue-400 flex items-center gap-2">
+                        <i class="ri-link-m"></i> 订阅链接 (必填)
+                    </label>
+                    <button @click="form.url=''" class="text-xs text-slate-500 hover:text-red-400 transition-colors">清空</button>
+                </div>
                 <textarea 
                     v-model="form.url"
-                    class="w-full h-40 bg-cyber-dark text-gray-300 p-4 pt-8 outline-none resize-none text-sm placeholder-gray-700 font-mono"
-                    placeholder=">> PASTE_SUBSCRIPTION_LINKS_HERE..."
+                    class="w-full h-32 bg-transparent p-4 text-sm text-slate-300 resize-none outline-none placeholder-slate-600"
+                    placeholder="在此粘贴机场订阅链接，支持多行..."
                 ></textarea>
-                <button @click="form.url = ''" class="absolute top-2 right-2 text-cyber-border hover:text-cyber-error transition-colors">
-                    <i class="ri-delete-bin-line"></i>
-                </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass-card rounded-2xl p-6 shadow-xl space-y-5">
                 
-                <div class="bg-cyber-panel border border-cyber-border p-4 relative neon-border">
-                    <label class="text-xs text-cyber-primary opacity-70 mb-1 block">TARGET_CLIENT</label>
-                    <select v-model="form.target" class="w-full bg-cyber-dark border border-cyber-border text-white p-2 outline-none focus:border-cyber-primary appearance-none cursor-pointer">
-                        <option value="clash">Clash</option>
-                        <option value="clashr">ClashR</option>
-                        <option value="v2ray">V2Ray</option>
-                        <option value="surge&ver=4">Surge 4+</option>
-                        <option value="loon">Loon</option>
-                        <option value="ss">Shadowsocks</option>
-                        <option value="surfboard">Surfboard</option>
-                        <option value="quanx">Quantumult X</option>
-                        <option value="singbox">Sing-Box</option>
-                    </select>
-                    <i class="ri-arrow-down-s-fill absolute right-4 top-9 text-cyber-primary pointer-events-none"></i>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-2">客户端类型</label>
+                        <div class="relative">
+                            <select v-model="form.target" class="w-full h-11 rounded-lg px-3 text-sm input-box appearance-none cursor-pointer">
+                                <option value="clash">Clash</option>
+                                <option value="clashr">ClashR</option>
+                                <option value="v2ray">V2Ray</option>
+                                <option value="surge&ver=4">Surge 4+</option>
+                                <option value="loon">Loon</option>
+                                <option value="ss">Shadowsocks</option>
+                                <option value="surfboard">Surfboard</option>
+                                <option value="quanx">Quantumult X</option>
+                            </select>
+                            <i class="ri-arrow-down-s-line absolute right-3 top-3 text-slate-500 pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-2">后端服务</label>
+                        <div class="relative">
+                            <select v-model="form.backend" class="w-full h-11 rounded-lg px-3 text-sm input-box appearance-none cursor-pointer">
+                                <option v-for="b in backends" :key="b.url" :value="b.url">{{ b.name }}</option>
+                            </select>
+                            <i class="ri-server-line absolute right-3 top-3 text-slate-500 pointer-events-none"></i>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="bg-cyber-panel border border-cyber-border p-4 relative neon-border">
-                    <label class="text-xs text-cyber-primary opacity-70 mb-1 block">SERVER_BACKEND</label>
-                    <select v-model="form.backend" class="w-full bg-cyber-dark border border-cyber-border text-white p-2 outline-none focus:border-cyber-primary appearance-none cursor-pointer">
-                        <option v-for="b in backends" :key="b.url" :value="b.url">{{ b.name }}</option>
-                    </select>
-                    <i class="ri-arrow-down-s-fill absolute right-4 top-9 text-cyber-primary pointer-events-none"></i>
-                </div>
-
-                <div class="col-span-1 md:col-span-2 bg-cyber-panel border border-cyber-border p-4 relative neon-border">
-                    <label class="text-xs text-cyber-primary opacity-70 mb-1 block">REMOTE_CONFIG</label>
-                    <select v-model="form.config" class="w-full bg-cyber-dark border border-cyber-border text-white p-2 outline-none focus:border-cyber-primary appearance-none cursor-pointer">
-                        <option v-for="c in configs" :key="c.url" :value="c.url">{{ c.name }}</option>
-                    </select>
-                    <i class="ri-arrow-down-s-fill absolute right-4 top-9 text-cyber-primary pointer-events-none"></i>
-                    <div class="text-[10px] text-gray-500 mt-1 truncate font-mono">{{ form.config }}</div>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="flex flex-col gap-4">
-            
-            <div class="bg-cyber-panel border border-cyber-border p-4 neon-border flex-grow">
-                <div class="text-xs font-bold text-white bg-cyber-border inline-block px-2 py-1 mb-4">FLAGS</div>
-                
-                <div class="space-y-3">
-                    <label class="flex items-center justify-between cursor-pointer group">
-                        <span class="text-sm text-gray-400 group-hover:text-white transition-colors">Emoji Support</span>
-                        <input type="checkbox" v-model="form.emoji" class="accent-cyber-primary w-4 h-4 rounded-none">
-                    </label>
-                    <label class="flex items-center justify-between cursor-pointer group">
-                        <span class="text-sm text-gray-400 group-hover:text-white transition-colors">UDP Relay</span>
-                        <input type="checkbox" v-model="form.udp" class="accent-cyber-primary w-4 h-4 rounded-none">
-                    </label>
-                    <label class="flex items-center justify-between cursor-pointer group">
-                        <span class="text-sm text-gray-400 group-hover:text-white transition-colors">Skip Cert Verify</span>
-                        <input type="checkbox" v-model="form.scv" class="accent-cyber-primary w-4 h-4 rounded-none">
-                    </label>
-                    <label class="flex items-center justify-between cursor-pointer group">
-                        <span class="text-sm text-gray-400 group-hover:text-white transition-colors">Output Node List</span>
-                        <input type="checkbox" v-model="form.nodeList" class="accent-cyber-primary w-4 h-4 rounded-none">
-                    </label>
-                    <label class="flex items-center justify-between cursor-pointer group">
-                        <span class="text-sm text-gray-400 group-hover:text-white transition-colors">Filter Illegal</span>
-                        <input type="checkbox" v-model="form.fdn" class="accent-cyber-primary w-4 h-4 rounded-none">
-                    </label>
-                </div>
-
-                <div class="mt-6 pt-4 border-t border-cyber-border">
-                    <label class="text-xs text-cyber-primary opacity-70 mb-1 block">CUSTOM_FILENAME</label>
-                    <input type="text" v-model="form.filename" placeholder="optional" class="w-full bg-cyber-dark border border-cyber-border text-white p-2 text-sm outline-none focus:border-cyber-primary">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-2">远程配置 (规则)</label>
+                    <div class="relative">
+                        <select v-model="form.config" class="w-full h-11 rounded-lg px-3 text-sm input-box appearance-none cursor-pointer font-mono text-slate-300">
+                            <option v-for="c in configs" :key="c.url" :value="c.url">{{ c.name }}</option>
+                        </select>
+                        <i class="ri-file-list-2-line absolute right-3 top-3 text-slate-500 pointer-events-none"></i>
+                    </div>
+                    <div class="mt-2 text-[10px] text-slate-500 font-mono truncate px-1">
+                        当前: {{ form.config || '基础转换模式' }}
+                    </div>
                 </div>
             </div>
 
-            <button @click="generate" class="w-full py-5 bg-cyber-primary text-black font-bold text-lg hover:bg-white hover:shadow-[0_0_20px_rgba(0,255,65,0.6)] transition-all uppercase tracking-widest clip-path-button">
-                <i class="ri-cpu-line mr-2"></i> EXECUTE
+            <button 
+                @click="generate"
+                class="w-full py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-[0.99] flex items-center justify-center gap-2 text-lg"
+            >
+                <i class="ri-magic-line"></i> 生成订阅链接
             </button>
+            
+            <div v-if="resultUrl" class="glass-card rounded-2xl p-6 border-l-4 border-blue-500 animate-fade-in-up">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-white flex items-center gap-2">
+                        <i class="ri-check-double-line text-green-400"></i> 生成成功
+                    </h3>
+                    <div class="flex gap-2">
+                        <a :href="resultUrl" target="_blank" class="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full hover:bg-blue-500/30 transition-colors">
+                            一键导入
+                        </a>
+                    </div>
+                </div>
 
-        </div>
-    </div>
-
-    <div v-if="resultUrl" class="mt-6 bg-black border border-cyber-primary p-0 relative shadow-[0_0_30px_rgba(0,255,65,0.1)]">
-        <div class="bg-cyber-primary text-black px-4 py-1 text-xs font-bold flex justify-between">
-            <span>>> OUTPUT_STREAM</span>
-            <span>STATUS: 200 OK</span>
-        </div>
-        
-        <div class="p-6">
-            <div class="mb-4">
-                <div class="text-xs text-gray-500 mb-1">LONG_URL:</div>
-                <div class="relative">
-                    <input type="text" readonly :value="resultUrl" class="w-full bg-[#050505] border border-cyber-border text-gray-300 p-3 pr-24 font-mono text-xs outline-none focus:border-cyber-primary">
-                    <button @click="copy(resultUrl)" class="absolute right-1 top-1 bottom-1 px-3 bg-cyber-border hover:bg-gray-700 text-white text-xs transition-colors">
-                        COPY
+                <div class="relative group mb-4">
+                    <input type="text" readonly :value="resultUrl" class="w-full bg-[#0b0f19] border border-white/10 rounded-lg p-3 pr-20 text-xs text-slate-400 font-mono outline-none focus:border-blue-500/50">
+                    <button @click="copy(resultUrl)" class="absolute right-1 top-1 bottom-1 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded transition-colors">
+                        复制
                     </button>
                 </div>
-            </div>
 
-            <div v-if="shortUrl" class="mb-4 animate-pulse-once">
-                <div class="text-xs text-cyber-primary mb-1">SHORT_URL (Generated):</div>
-                <div class="relative">
-                    <input type="text" readonly :value="shortUrl" class="w-full bg-[#050505] border border-cyber-primary text-cyber-primary p-3 pr-24 font-mono text-sm font-bold outline-none shadow-[0_0_10px_rgba(0,255,65,0.2)]">
-                    <button @click="copy(shortUrl)" class="absolute right-1 top-1 bottom-1 px-3 bg-cyber-primary hover:bg-white text-black text-xs font-bold transition-colors">
-                        COPY
+                <div class="border-t border-white/10 pt-4 flex flex-col md:flex-row items-center gap-4">
+                    <button 
+                        @click="getShortUrl" 
+                        :disabled="loadingShort || shortUrl"
+                        class="w-full md:w-auto px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-colors flex items-center justify-center gap-2 min-w-[140px]"
+                    >
+                        <i v-if="loadingShort" class="ri-loader-4-line animate-spin"></i>
+                        <i v-else class="ri-link-m"></i>
+                        {{ shortUrl ? '短链已生成' : '生成短链接' }}
                     </button>
+
+                    <div v-if="shortUrl" class="flex-1 w-full relative">
+                        <input type="text" readonly :value="shortUrl" class="w-full bg-blue-500/10 border border-blue-500/30 rounded-lg p-2 pr-20 text-sm text-blue-400 font-bold outline-none">
+                        <button @click="copy(shortUrl)" class="absolute right-1 top-1 bottom-1 px-3 bg-blue-600 hover:bg-blue-500 text-white text-xs rounded transition-colors shadow-sm">
+                            复制短链
+                        </button>
+                    </div>
                 </div>
+
             </div>
 
-            <div class="flex gap-4 border-t border-cyber-border pt-4">
-                <button 
-                    @click="getShortUrl" 
-                    :disabled="loadingShort"
-                    class="flex-1 border border-cyber-primary text-cyber-primary py-2 hover:bg-cyber-primary hover:text-black transition-all text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    <span v-if="loadingShort"><i class="ri-loader-4-line animate-spin"></i> PROCESSING...</span>
-                    <span v-else><i class="ri-link-m"></i> GENERATE SHORT LINK</span>
-                </button>
+        </div>
+
+        <div class="lg:col-span-4 space-y-6">
+            <div class="glass-card rounded-2xl p-6 h-full">
+                <h3 class="font-bold text-slate-200 mb-6 flex items-center gap-2">
+                    <i class="ri-settings-4-line text-blue-500"></i> 高级选项
+                </h3>
                 
-                <a :href="resultUrl" target="_blank" class="flex-1 border border-white text-white py-2 hover:bg-white hover:text-black transition-all text-center text-sm font-bold">
-                    <i class="ri-external-link-line"></i> IMPORT TO APP
-                </a>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between group cursor-pointer" @click="form.emoji = !form.emoji">
+                        <span class="text-sm text-slate-400 group-hover:text-slate-200 transition-colors">Emoji 表情</span>
+                        <div :class="form.emoji ? 'bg-blue-500' : 'bg-slate-700'" class="w-10 h-5 rounded-full relative transition-colors">
+                            <div :class="form.emoji ? 'translate-x-5' : 'translate-x-0.5'" class="absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between group cursor-pointer" @click="form.udp = !form.udp">
+                        <span class="text-sm text-slate-400 group-hover:text-slate-200 transition-colors">UDP 转发</span>
+                        <div :class="form.udp ? 'bg-blue-500' : 'bg-slate-700'" class="w-10 h-5 rounded-full relative transition-colors">
+                            <div :class="form.udp ? 'translate-x-5' : 'translate-x-0.5'" class="absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between group cursor-pointer" @click="form.scv = !form.scv">
+                        <span class="text-sm text-slate-400 group-hover:text-slate-200 transition-colors">跳过证书验证</span>
+                        <div :class="form.scv ? 'bg-blue-500' : 'bg-slate-700'" class="w-10 h-5 rounded-full relative transition-colors">
+                            <div :class="form.scv ? 'translate-x-5' : 'translate-x-0.5'" class="absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between group cursor-pointer" @click="form.nodeList = !form.nodeList">
+                        <span class="text-sm text-slate-400 group-hover:text-slate-200 transition-colors">输出 Node List</span>
+                        <div :class="form.nodeList ? 'bg-blue-500' : 'bg-slate-700'" class="w-10 h-5 rounded-full relative transition-colors">
+                            <div :class="form.nodeList ? 'translate-x-5' : 'translate-x-0.5'" class="absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between group cursor-pointer" @click="form.fdn = !form.fdn">
+                        <span class="text-sm text-slate-400 group-hover:text-slate-200 transition-colors">过滤非法节点</span>
+                        <div :class="form.fdn ? 'bg-blue-500' : 'bg-slate-700'" class="w-10 h-5 rounded-full relative transition-colors">
+                            <div :class="form.fdn ? 'translate-x-5' : 'translate-x-0.5'" class="absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-white/10 space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 mb-2">自定义文件名</label>
+                        <input v-model="form.filename" type="text" placeholder="可选" class="w-full h-10 rounded-lg px-3 text-sm input-box placeholder-slate-600">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
 </div>
 
 <script>
@@ -226,18 +240,18 @@
 
     createApp({
         setup() {
-            // 1. 严格按照要求的后端列表
+            // 1. 严格锁定后端地址
             const backends = [
-                { name: '肥羊增强型 (v1.mk)', url: 'https://url.v1.mk/sub?' },
-                { name: '周润发HK后端', url: 'https://subapi.zrfme.com/sub?' },
-                { name: '肥羊备用后端 (d1.mk)', url: 'https://sub.d1.mk/sub?' }
+                { name: '默认: 肥羊增强型 (v1.mk)', url: 'https://url.v1.mk/sub?' },
+                { name: '备用1: 周润发HK后端', url: 'https://subapi.zrfme.com/sub?' },
+                { name: '备用2: 肥羊备用 (d1.mk)', url: 'https://sub.d1.mk/sub?' }
             ]
 
-            // 2. 严格按照要求的配置列表
+            // 2. 严格锁定配置规则
             const configs = [
-                { name: '不良林 无DNS泄露', url: 'https://cf.buliang0.cf/clash-rules/nodnsleak.ini' },
+                { name: '定制: 不良林 无DNS泄露', url: 'https://cf.buliang0.cf/clash-rules/nodnsleak.ini' },
                 { name: 'ACL4SSR_Online_Full', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full.ini' },
-                { name: '无 (仅基础转换)', url: '' }
+                { name: '无 (仅转换格式)', url: '' }
             ]
 
             const form = reactive({
@@ -258,10 +272,12 @@
             const loadingShort = ref(false)
 
             const generate = () => {
-                if (!form.url) return alert('>> ERROR: INPUT_EMPTY')
+                if (!form.url) {
+                    alert('请先输入订阅链接！')
+                    return
+                }
                 
-                // 重置短链
-                shortUrl.value = '' 
+                shortUrl.value = '' // 清空旧的短链
 
                 const params = new URLSearchParams()
                 params.append('target', form.target)
@@ -275,56 +291,51 @@
                 if (form.config) params.append('config', form.config)
                 if (form.filename) params.append('filename', form.filename)
 
-                // 处理后端地址，确保没有重复的 /sub?
                 let baseUrl = form.backend
-                if (!baseUrl.includes('?')) {
-                    baseUrl += '?'
-                } else if (!baseUrl.endsWith('?') && !baseUrl.endsWith('&')) {
-                    baseUrl += '&'
-                }
+                // 简单的URL清理
+                if (!baseUrl.includes('?')) baseUrl += '?'
+                else if (!baseUrl.endsWith('?') && !baseUrl.endsWith('&')) baseUrl += '&'
 
-                // 移除 params 中可能的空值键（虽然 URLSearchParams 会处理，但为了干净）
                 resultUrl.value = baseUrl + params.toString()
             }
 
-            // 短链接功能核心逻辑
+            // 短链接核心逻辑
             const getShortUrl = async () => {
                 if (!resultUrl.value) return
                 
                 loadingShort.value = true
                 try {
-                    // 使用 v1.mk 的短链 API
-                    // 注意：这里使用 GET 请求以避免某些 CORS 预检问题
+                    // 优先使用 Base64 方式请求 v1.mk 接口
                     const apiUrl = `https://url.v1.mk/short?longUrl=${encodeURIComponent(btoa(resultUrl.value))}`
                     
-                    // 尝试直接请求 (v1.mk 的 API 通常接受 base64 编码的长链接)
                     const response = await fetch(apiUrl)
                     const data = await response.json()
                     
                     if (data.Code === 1 && data.ShortUrl) {
                         shortUrl.value = data.ShortUrl
                     } else {
-                        // 备用尝试：如果不接受 base64，尝试直接传
+                        // 备用：如果不接受 Base64，尝试普通编码
                         const fallbackUrl = `https://url.v1.mk/short?longUrl=${encodeURIComponent(resultUrl.value)}`
                         const res2 = await fetch(fallbackUrl)
                         const data2 = await res2.json()
                         if (data2.Code === 1 && data2.ShortUrl) {
                             shortUrl.value = data2.ShortUrl
                         } else {
-                            alert('>> ERROR: SHORT_LINK_FAILED (API Error)')
+                            alert('短链生成失败：' + data.Message)
                         }
                     }
                 } catch (e) {
                     console.error(e)
-                    alert('>> ERROR: NETWORK_FAIL (Check Console/CORS)')
+                    alert('网络请求失败，请检查网络或跨域设置')
                 } finally {
                     loadingShort.value = false
                 }
             }
 
             const copy = (text) => {
+                if(!text) return
                 navigator.clipboard.writeText(text).then(() => {
-                    alert('>> COPIED_TO_CLIPBOARD')
+                    alert('已复制到剪贴板')
                 })
             }
 
