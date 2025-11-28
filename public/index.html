@@ -1,270 +1,338 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SubConvert Pro - 极速订阅转换</title>
+    <title>SubConvert Ultra - 订阅转换</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0f172a',
+                            card: '#1e293b',
+                            input: '#334155',
+                            border: '#475569'
+                        },
+                        brand: {
+                            500: '#6366f1', // Indigo
+                            600: '#4f46e5'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            background-image: 
-                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            min-height: 100vh;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-        .input-group {
-            transition: all 0.2s;
-        }
-        .input-group:focus-within {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-            border-color: #6366f1;
-        }
-        /* 自定义滚动条 */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        /* 隐藏滚动条但保留功能 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
-        .fade-enter-from, .fade-leave-to { opacity: 0; }
+        /* 选中状态的样式 */
+        .config-group-label {
+            color: #94a3b8;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 8px 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
     </style>
 </head>
-<body class="text-slate-800 antialiased py-10 px-4">
+<body class="bg-gray-100 dark:bg-dark-bg text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen flex flex-col">
 
-<div id="app" class="max-w-4xl mx-auto">
-    <header class="text-center mb-10">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600 text-white shadow-lg mb-4">
-            <i class="ri-exchange-box-line text-3xl"></i>
+<div id="app" class="flex-grow container mx-auto px-4 py-8 max-w-5xl">
+    
+    <div class="flex justify-between items-center mb-8">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/20">
+                <i class="ri-command-fill text-white text-xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold tracking-tight">SubConvert <span class="text-brand-500">Ultra</span></h1>
         </div>
-        <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">SubConvert Pro</h1>
-        <p class="text-slate-300">极简 · 高效 · 现代化的订阅转换工具</p>
-    </header>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <div class="lg:col-span-2 space-y-6">
+        <button @click="toggleTheme" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+            <i v-if="isDark" class="ri-moon-clear-line text-xl text-yellow-400"></i>
+            <i v-else class="ri-sun-line text-xl text-orange-500"></i>
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <div class="lg:col-span-8 space-y-6">
             
-            <div class="glass-panel rounded-3xl p-6">
-                <label class="block text-sm font-semibold text-slate-500 mb-2 uppercase tracking-wider">
-                    <i class="ri-link-m mr-1"></i> 原始订阅链接
-                </label>
-                <div class="input-group relative rounded-xl border border-slate-200 bg-white overflow-hidden">
-                    <textarea 
-                        v-model="form.url"
-                        placeholder="粘贴你的机场订阅链接，多个链接请用 | 分隔..."
-                        class="w-full h-24 p-4 outline-none resize-none text-slate-700 placeholder-slate-400 text-sm"
-                    ></textarea>
+            <div class="bg-white dark:bg-dark-card rounded-2xl p-1 shadow-sm border border-gray-200 dark:border-dark-border">
+                <div class="p-4 border-b border-gray-100 dark:border-dark-border flex justify-between items-center">
+                    <label class="font-semibold text-sm flex items-center gap-2">
+                        <i class="ri-links-line text-brand-500"></i> 订阅链接
+                    </label>
+                    <span class="text-xs text-gray-400">支持多行输入或用 | 分隔</span>
                 </div>
+                <textarea 
+                    v-model="form.url"
+                    class="w-full h-32 bg-transparent p-4 outline-none text-sm resize-none placeholder-gray-400 dark:placeholder-gray-600"
+                    placeholder="请粘贴机场订阅链接..."
+                ></textarea>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="glass-panel rounded-3xl p-6">
-                    <label class="block text-sm font-semibold text-slate-500 mb-2 uppercase tracking-wider">
-                        <i class="ri-computer-line mr-1"></i> 客户端类型
-                    </label>
-                    <div class="relative">
-                        <select v-model="form.target" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all appearance-none cursor-pointer">
-                            <option value="clash">Clash</option>
-                            <option value="clashr">ClashR</option>
-                            <option value="v2ray">V2Ray</option>
-                            <option value="surge&ver=4">Surge 4+</option>
-                            <option value="loon">Loon</option>
-                            <option value="ss">Shadowsocks</option>
-                            <option value="ssr">ShadowsocksR</option>
-                            <option value="surfboard">Surfboard</option>
-                            <option value="quanx">Quantumult X</option>
-                        </select>
-                        <i class="ri-arrow-down-s-line absolute right-4 top-3.5 text-slate-400 pointer-events-none"></i>
+            <div class="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-200 dark:border-dark-border overflow-hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x border-gray-200 dark:border-dark-border divide-gray-200 dark:divide-dark-border">
+                    
+                    <div class="p-5">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-3 tracking-wider">客户端 (Target)</label>
+                        <div class="relative">
+                            <select v-model="form.target" class="w-full bg-gray-50 dark:bg-dark-input border border-gray-200 dark:border-dark-border rounded-lg px-4 py-3 outline-none focus:border-brand-500 transition-colors appearance-none cursor-pointer text-sm font-medium">
+                                <option value="clash">Clash</option>
+                                <option value="clashr">ClashR</option>
+                                <option value="v2ray">V2Ray</option>
+                                <option value="surge&ver=4">Surge 4+</option>
+                                <option value="loon">Loon</option>
+                                <option value="ss">Shadowsocks</option>
+                                <option value="ssr">ShadowsocksR</option>
+                                <option value="surfboard">Surfboard</option>
+                                <option value="quanx">Quantumult X</option>
+                                <option value="singbox">Sing-Box</option>
+                            </select>
+                            <i class="ri-arrow-down-s-line absolute right-3 top-3.5 text-gray-400 pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <div class="p-5">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-3 tracking-wider">后端服务 (Backend)</label>
+                        <div class="relative">
+                            <select v-model="form.backend" class="w-full bg-gray-50 dark:bg-dark-input border border-gray-200 dark:border-dark-border rounded-lg px-4 py-3 outline-none focus:border-brand-500 transition-colors appearance-none cursor-pointer text-sm font-medium">
+                                <option v-for="(url, label) in backendOptions" :key="url" :value="url">
+                                    {{ label }}
+                                </option>
+                            </select>
+                            <i class="ri-arrow-down-s-line absolute right-3 top-3.5 text-gray-400 pointer-events-none"></i>
+                        </div>
                     </div>
                 </div>
 
-                <div class="glass-panel rounded-3xl p-6">
-                    <label class="block text-sm font-semibold text-slate-500 mb-2 uppercase tracking-wider">
-                        <i class="ri-server-line mr-1"></i> 后端地址
-                    </label>
+                <div class="p-5 border-t border-gray-200 dark:border-dark-border">
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-3 tracking-wider">远程配置 (Remote Config)</label>
                     <div class="relative">
-                        <select v-model="form.backend" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all appearance-none cursor-pointer">
-                            <option v-for="backend in backends" :key="backend.url" :value="backend.url">
-                                {{ backend.name }}
-                            </option>
+                        <select v-model="form.config" class="w-full bg-gray-50 dark:bg-dark-input border border-gray-200 dark:border-dark-border rounded-lg px-4 py-3 outline-none focus:border-brand-500 transition-colors appearance-none cursor-pointer text-sm font-medium font-mono">
+                            <option value="">不使用配置 (默认)</option>
+                            <template v-for="(group, index) in remoteConfig" :key="index">
+                                <optgroup :label="group.label">
+                                    <option v-for="item in group.options" :key="item.value" :value="item.value">
+                                        {{ item.label }}
+                                    </option>
+                                </optgroup>
+                            </template>
                         </select>
-                        <i class="ri-arrow-down-s-line absolute right-4 top-3.5 text-slate-400 pointer-events-none"></i>
+                        <i class="ri-arrow-down-s-line absolute right-3 top-3.5 text-gray-400 pointer-events-none"></i>
                     </div>
-                </div>
-            </div>
-
-            <div class="glass-panel rounded-3xl p-6">
-                <label class="block text-sm font-semibold text-slate-500 mb-2 uppercase tracking-wider">
-                    <i class="ri-file-settings-line mr-1"></i> 远程配置 (ACL4SSR)
-                </label>
-                <div class="relative">
-                    <select v-model="form.config" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all appearance-none cursor-pointer">
-                        <option v-for="conf in remoteConfigs" :key="conf.url" :value="conf.url">
-                            {{ conf.name }}
-                        </option>
-                    </select>
-                    <i class="ri-arrow-down-s-line absolute right-4 top-3.5 text-slate-400 pointer-events-none"></i>
                 </div>
             </div>
 
             <button 
                 @click="generate"
-                class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-bold rounded-2xl shadow-xl shadow-indigo-200 transition-all duration-200 flex items-center justify-center gap-2 group"
+                class="w-full py-4 bg-brand-600 hover:bg-brand-500 active:scale-[0.99] text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 transition-all flex items-center justify-center gap-2"
             >
-                <i class="ri-magic-line text-xl group-hover:rotate-12 transition-transform"></i>
-                立即生成订阅
+                <i class="ri-flashlight-fill"></i> 生成订阅链接
             </button>
-        </div>
-
-        <div class="space-y-6">
             
-            <div class="glass-panel rounded-3xl p-6">
-                <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                    <i class="ri-equalizer-line mr-2 text-indigo-500"></i> 高级选项
-                </h3>
-                
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                        <span class="text-sm text-slate-600">添加 Emoji</span>
-                        <button @click="form.emoji = !form.emoji" :class="form.emoji ? 'bg-indigo-500' : 'bg-slate-200'" class="w-11 h-6 rounded-full relative transition-colors focus:outline-none">
-                            <span :class="form.emoji ? 'translate-x-6' : 'translate-x-1'" class="absolute top-1 left-0 w-4 h-4 bg-white rounded-full transition-transform shadow-sm"></span>
-                        </button>
-                    </div>
-
-                    <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                        <span class="text-sm text-slate-600">UDP 支持</span>
-                        <button @click="form.udp = !form.udp" :class="form.udp ? 'bg-indigo-500' : 'bg-slate-200'" class="w-11 h-6 rounded-full relative transition-colors focus:outline-none">
-                            <span :class="form.udp ? 'translate-x-6' : 'translate-x-1'" class="absolute top-1 left-0 w-4 h-4 bg-white rounded-full transition-transform shadow-sm"></span>
-                        </button>
-                    </div>
-
-                    <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                        <span class="text-sm text-slate-600">跳过证书验证</span>
-                        <button @click="form.scv = !form.scv" :class="form.scv ? 'bg-indigo-500' : 'bg-slate-200'" class="w-11 h-6 rounded-full relative transition-colors focus:outline-none">
-                            <span :class="form.scv ? 'translate-x-6' : 'translate-x-1'" class="absolute top-1 left-0 w-4 h-4 bg-white rounded-full transition-transform shadow-sm"></span>
-                        </button>
-                    </div>
-
-                    <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                        <span class="text-sm text-slate-600">输出为 Node List</span>
-                        <button @click="form.nodeList = !form.nodeList" :class="form.nodeList ? 'bg-indigo-500' : 'bg-slate-200'" class="w-11 h-6 rounded-full relative transition-colors focus:outline-none">
-                            <span :class="form.nodeList ? 'translate-x-6' : 'translate-x-1'" class="absolute top-1 left-0 w-4 h-4 bg-white rounded-full transition-transform shadow-sm"></span>
-                        </button>
-                    </div>
+            <div v-if="resultUrl" class="bg-white dark:bg-dark-card rounded-2xl p-6 shadow-sm border border-brand-500/30 animate-fade-in-up">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg">生成成功</h3>
+                    <span class="text-xs bg-green-500/10 text-green-500 px-2 py-1 rounded">200 OK</span>
+                </div>
+                <div class="bg-gray-50 dark:bg-[#0f1115] p-4 rounded-lg border border-gray-200 dark:border-gray-800 mb-4 break-all font-mono text-xs text-gray-600 dark:text-gray-400 selection:bg-brand-500 selection:text-white">
+                    {{ resultUrl }}
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <button @click="copyUrl" class="py-2.5 px-4 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 font-medium text-sm transition-colors">
+                        <i class="ri-file-copy-line mr-1"></i> 复制链接
+                    </button>
+                    <a :href="resultUrl" target="_blank" class="py-2.5 px-4 rounded-lg bg-brand-600/10 text-brand-600 hover:bg-brand-600/20 font-medium text-sm text-center transition-colors">
+                        一键导入 / 打开
+                    </a>
                 </div>
             </div>
 
-            <transition name="fade">
-                <div v-if="resultUrl" class="glass-panel rounded-3xl p-6 border-l-4 border-indigo-500">
-                    <h3 class="text-lg font-bold text-slate-800 mb-2">生成成功！</h3>
-                    <p class="text-xs text-slate-500 mb-4 break-all leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-100">
-                        {{ resultUrl }}
-                    </p>
-                    <div class="flex gap-2">
-                        <button @click="copyUrl" class="flex-1 bg-white border border-slate-200 hover:border-indigo-300 text-slate-700 py-2 rounded-xl text-sm font-medium transition-all shadow-sm hover:shadow-md active:scale-95">
-                            <i class="ri-file-copy-line mr-1"></i> 复制
-                        </button>
-                        <a :href="resultUrl" target="_blank" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 py-2 rounded-xl text-sm font-medium text-center transition-colors">
-                            打开 <i class="ri-external-link-line ml-1"></i>
-                        </a>
+        </div>
+
+        <div class="lg:col-span-4 space-y-6">
+            <div class="bg-white dark:bg-dark-card rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-dark-border h-full">
+                <h3 class="font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                    <i class="ri-settings-4-line text-brand-500"></i> 高级选项
+                </h3>
+                
+                <div class="space-y-4">
+                    <div v-for="(val, key) in options" :key="key" class="flex items-center justify-between group">
+                        <span class="text-sm text-gray-600 dark:text-gray-400 font-medium">{{ optionLabels[key] }}</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" v-model="form[key]" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-brand-600"></div>
+                        </label>
+                    </div>
+                    
+                    <div class="pt-4 border-t border-gray-200 dark:border-dark-border space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1.5">包含节点 (正则)</label>
+                            <input v-model="form.include" type="text" placeholder="例如: 香港|HK|HongKong" class="w-full bg-gray-50 dark:bg-dark-input border border-gray-200 dark:border-dark-border rounded-lg px-3 py-2 text-xs outline-none focus:border-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1.5">排除节点 (正则)</label>
+                            <input v-model="form.exclude" type="text" placeholder="例如: 剩余流量|过期时间" class="w-full bg-gray-50 dark:bg-dark-input border border-gray-200 dark:border-dark-border rounded-lg px-3 py-2 text-xs outline-none focus:border-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1.5">自定义文件名</label>
+                            <input v-model="form.filename" type="text" placeholder="默认为 subconverter" class="w-full bg-gray-50 dark:bg-dark-input border border-gray-200 dark:border-dark-border rounded-lg px-3 py-2 text-xs outline-none focus:border-brand-500">
+                        </div>
                     </div>
                 </div>
-            </transition>
-
+            </div>
         </div>
     </div>
-    
-    <footer class="text-center mt-12 text-slate-400 text-sm">
-        <p>© 2024 SubConvert Pro. Powered by Vue 3 & Tailwind.</p>
-    </footer>
 </div>
 
 <script>
-    const { createApp, ref, computed } = Vue
+    const { createApp, ref, reactive, onMounted } = Vue
 
     createApp({
         setup() {
-            const form = ref({
+            const isDark = ref(true) // 默认开启暗黑模式
+
+            // 表单数据
+            const form = reactive({
                 url: '',
                 target: 'clash',
-                backend: 'https://api.v1.mk/sub?', // 默认后端，你可以修改
-                config: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online.ini',
+                backend: 'https://api.v1.mk/sub?', // 默认后端
+                config: '',
                 emoji: true,
                 udp: false,
+                tfo: false,
                 scv: false,
+                fdn: false,
+                sort: false,
                 nodeList: false,
+                include: '',
+                exclude: '',
+                filename: ''
             })
 
             const resultUrl = ref('')
 
-            const backends = [
-                { name: '肥羊增强型后端 (v1.mk)', url: 'https://api.v1.mk/sub?' },
-                { name: 'Subconverter 作者提供', url: 'https://sub.xeton.dev/sub?' },
-                { name: 'API.TSZ (公共)', url: 'https://api.tsz.moe/sub?' },
-                { name: '本地后端 (127.0.0.1:25500)', url: 'http://127.0.0.1:25500/sub?' },
+            // 选项标签映射
+            const optionLabels = {
+                emoji: 'Emoji 表情',
+                udp: '启用 UDP',
+                tfo: '启用 TFO',
+                scv: '跳过证书验证',
+                fdn: '过滤非法节点',
+                sort: '节点排序',
+                nodeList: '输出 Node List'
+            }
+            
+            // 仅用于遍历显示开关
+            const options = {
+                emoji: true, udp: false, tfo: false, scv: false, fdn: false, sort: false, nodeList: false
+            }
+
+            // =========================================================================
+            // 🔴 关键区域：后端与配置列表
+            // 你可以打开 sub-web-modify 的 Subconverter.vue，搜索 "backendOptions" 和 "remoteConfig"
+            // 将那个文件里的数据对应替换到下面。
+            // =========================================================================
+
+            // 1. 后端地址列表 (对应 Subconverter.vue 中的 backendOptions)
+            // 我这里预置了 sub-web-modify 社区版最常用的列表
+            const backendOptions = {
+                "肥羊增强型后端 [v1.mk]": "https://api.v1.mk/sub?",
+                "品云提供后端 [id9.cc]": "https://sub.id9.cc/sub?",
+                "Nameless 13 [nameless13.com]": "https://www.nameless13.com/sub?",
+                "Subconverter 作者 [sub.xeton.dev]": "https://sub.xeton.dev/sub?",
+                "つつ-多地防失联 [tsutsu.one]": "https://api.tsutsu.one/sub?",
+                "Dler [dler.io]": "https://api.dler.io/sub?",
+                "本地局域网 [127.0.0.1:25500]": "http://127.0.0.1:25500/sub?"
+            }
+
+            // 2. 远程配置列表 (对应 Subconverter.vue 中的 remoteConfig)
+            // 注意：sub-web-modify 使用的是分组结构 [{label: 'xx', options: [...]}, ...]
+            // 下面是标准 ACL4SSR 结构示例，如果你的项目中定义不同，请整块替换。
+            const remoteConfig = [
+                {
+                    label: "ACL4SSR",
+                    options: [
+                        { label: "ACL4SSR_Online 默认版", value: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online.ini" },
+                        { label: "ACL4SSR_Online_AdblockPlus 去广告", value: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_AdblockPlus.ini" },
+                        { label: "ACL4SSR_Online_Mini 精简版", value: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Mini.ini" },
+                        { label: "ACL4SSR_Online_Full 全分组", value: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full.ini" }
+                    ]
+                },
+                {
+                    label: "其他热门",
+                    options: [
+                        { label: "基础转换 (仅转换格式)", value: "" },
+                        { label: "CyberNode 规则", value: "https://raw.githubusercontent.com/CyberNode/CyberNode/master/Clash/config/CyberNode_Online.ini" }
+                    ]
+                }
             ]
 
-            const remoteConfigs = [
-                { name: 'ACL4SSR_Online (推荐)', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online.ini' },
-                { name: 'ACL4SSR_Online_AdblockPlus', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_AdblockPlus.ini' },
-                { name: 'ACL4SSR_Online_Mini', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Mini.ini' },
-                { name: '无 (仅转换格式)', url: '' },
-            ]
+            // =========================================================================
+            // 🔴 结束关键区域
+            // =========================================================================
+
+            const toggleTheme = () => {
+                isDark.value = !isDark.value
+                if (isDark.value) {
+                    document.documentElement.classList.add('dark')
+                } else {
+                    document.documentElement.classList.remove('dark')
+                }
+            }
 
             const generate = () => {
-                if (!form.value.url) {
-                    alert('请先输入订阅链接！')
+                if (!form.url) {
+                    alert('请输入订阅链接')
                     return
                 }
 
-                // 构建参数
                 const params = new URLSearchParams()
-                params.append('target', form.value.target)
-                params.append('url', form.value.url)
-                params.append('emoji', form.value.emoji.toString())
-                params.append('udp', form.value.udp.toString())
-                params.append('scv', form.value.scv.toString())
-                params.append('list', form.value.nodeList.toString())
+                params.append('target', form.target)
+                params.append('url', form.url)
+                params.append('emoji', form.emoji)
+                params.append('udp', form.udp)
+                params.append('tfo', form.tfo)
+                params.append('scv', form.scv)
+                params.append('fdn', form.fdn)
+                params.append('sort', form.sort)
+                params.append('list', form.nodeList)
                 
-                if (form.value.config) {
-                    params.append('config', form.value.config)
-                }
+                if (form.config) params.append('config', form.config)
+                if (form.include) params.append('include', form.include)
+                if (form.exclude) params.append('exclude', form.exclude)
+                if (form.filename) params.append('filename', form.filename)
 
-                // 拼接完整URL
-                resultUrl.value = form.value.backend + params.toString()
+                resultUrl.value = form.backend + params.toString()
             }
 
-            const copyUrl = async () => {
-                try {
-                    await navigator.clipboard.writeText(resultUrl.value)
-                    alert('已复制到剪贴板！')
-                } catch (err) {
-                    alert('复制失败，请手动复制')
-                }
+            const copyUrl = () => {
+                navigator.clipboard.writeText(resultUrl.value).then(() => {
+                    alert('复制成功')
+                })
             }
 
             return {
+                isDark,
+                toggleTheme,
                 form,
-                resultUrl,
-                backends,
-                remoteConfigs,
+                backendOptions,
+                remoteConfig,
+                options,
+                optionLabels,
                 generate,
+                resultUrl,
                 copyUrl
             }
         }
