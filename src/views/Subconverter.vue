@@ -19,13 +19,8 @@
           <el-container>
             <el-form :model="form" label-width="80px" label-position="left" style="width: 100%">
               <el-form-item label="订阅链接:">
-                <el-input
-                  type="textarea"
-                  v-model="form.sourceSubUrl"
-                  :rows="3"
-                  placeholder="支持订阅或ss/ssr/vmess链接，支持多行输入（一行一个）"
-                  clearable
-                  ></el-input>
+                <el-input v-model="form.sourceSubUrl" type="textarea" rows="3"
+                  placeholder="支持各种订阅链接或单节点链接，多个链接每行一个或用 | 分隔" />
               </el-form-item>
               <el-form-item label="生成类型:">
                 <el-select v-model="form.clientType" style="width: 100%">
@@ -525,11 +520,99 @@ export default {
     },
     makeUrl() {
       if (this.form.sourceSubUrl === "" || this.form.clientType === "") {
-        this.$message.error("订阅链接和客户端类型不能为空");
-          return false;
+        this.$message.error("订阅链接与客户端为必填项");
+        return false;
       }
-      let sourceSub = this.form.sourceSubUrl.replace(/(\n|\r|\r\n)/g, "|").replace(/\|+/g, "|");
-    }
+      let backend =
+        this.form.customBackend === ""
+          ? defaultBackend
+          : this.form.customBackend;
+      let sourceSub = this.form.sourceSubUrl;
+      sourceSub = sourceSub.replace(/(\n|\r|\n\r)/g, "|");
+      this.customSubUrl =
+        backend +
+        "/sub?target=" +
+        this.form.clientType +
+        "&url=" +
+        encodeURIComponent(sourceSub) +
+        "&insert=" +
+        this.form.insert;
+      if (this.form.remoteConfig !== "") {
+        this.customSubUrl +=
+          "&config=" + encodeURIComponent(this.form.remoteConfig);
+      }
+      if (this.form.excludeRemarks !== "") {
+        this.customSubUrl +=
+          "&exclude=" + encodeURIComponent(this.form.excludeRemarks);
+      }
+      if (this.form.includeRemarks !== "") {
+        this.customSubUrl +=
+          "&include=" + encodeURIComponent(this.form.includeRemarks);
+      }
+      if (this.form.filename !== "") {
+        this.customSubUrl +=
+          "&filename=" + encodeURIComponent(this.form.filename);
+      }
+      if (this.form.rename !== "") {
+        this.customSubUrl +=
+          "&rename=" + encodeURIComponent(this.form.rename);
+      }
+      if (this.form.interval !== "") {
+        this.customSubUrl +=
+          "&interval=" + encodeURIComponent(this.form.interval * 86400);
+      }
+      if (this.form.devid !== "") {
+        this.customSubUrl +=
+          "&dev_id=" + encodeURIComponent(this.form.devid);
+      }
+      if (this.form.appendType) {
+        this.customSubUrl +=
+          "&append_type=" + this.form.appendType.toString();
+      }
+      if (this.form.tls13) {
+        this.customSubUrl +=
+          "&tls13=" + this.form.tls13.toString();
+      }
+      if (this.form.sort) {
+        this.customSubUrl +=
+          "&sort=" + this.form.sort.toString();
+      }
+      this.customSubUrl +=
+        "&emoji=" +
+        this.form.emoji.toString() +
+        "&list=" +
+        this.form.nodeList.toString() +
+        "&xudp=" +
+        this.form.xudp.toString() +
+        "&udp=" +
+        this.form.udp.toString() +
+        "&tfo=" +
+        this.form.tfo.toString() +
+        "&expand=" +
+        this.form.expand.toString() +
+        "&scv=" +
+        this.form.scv.toString() +
+        "&fdn=" +
+        this.form.fdn.toString();
+      if (this.form.clientType.includes("surge")) {
+        if (this.form.tpl.surge.doh === true) {
+          this.customSubUrl += "&surge.doh=true";
+        }
+      }
+      if (this.form.clientType === "clash") {
+        if (this.form.tpl.clash.doh === true) {
+          this.customSubUrl += "&clash.doh=true";
+        }
+        this.customSubUrl += "&new_name=" + this.form.new_name.toString();
+      }
+      if (this.form.clientType === "singbox") {
+        if (this.form.tpl.singbox.ipv6 === true) {
+          this.customSubUrl += "&singbox.ipv6=1";
+        }
+      }
+      this.$copyText(this.customSubUrl);
+      this.$message.success("定制订阅已复制到剪贴板");
+    },
     makeShortUrl() {
       let duan =
         this.form.shortType === ""
@@ -791,27 +874,9 @@ export default {
 </script>
 
 <style>
-/* 1. 修改下拉框整体背景为深灰色 */
-.el-select-dropdown {
-  background-color: #424242 !important; /* 深灰色背景 */
-  border: 1px solid #424242 !important;
-}
-
-/* 2. 确保选项文字颜色为白色 */
-.el-select-dropdown__item {
-  color: #ffffff !important;
-}
-
-/* 3. 鼠标悬停在选项上时的颜色（稍微变亮） */
-.el-select-dropdown__item.hover, 
-.el-select-dropdown__item:hover {
-  background-color: #585858 !important;
-}
-
-/* 4. 修复下拉框顶部的小三角箭头颜色，让它也变成深灰色 */
-.el-popper[x-placement^=bottom] .popper__arrow,
-.el-popper[x-placement^=bottom] .popper__arrow::after {
-  border-bottom-color: #424242 !important;
+/* 修正 Twikoo 在 el-card 内的样式 */
+#twikoo-comment .tk-main {
+  background-color: transparent !important;
 }
 
 /* 
@@ -824,6 +889,3 @@ export default {
   display: none !important;
 }
 </style>
-
-
-
