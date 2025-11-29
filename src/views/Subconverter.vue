@@ -874,6 +874,23 @@ export default {
 </script>
 
 <style>
+/* 强制修改下拉菜单选项文字颜色为灰色 */
+.el-select-dropdown__item {
+  color: #606266 !important; /* 灰色字体 */
+}
+
+/* 鼠标悬停时的样式 */
+.el-select-dropdown__item.hover, 
+.el-select-dropdown__item:hover {
+  background-color: #f5f7fa !important;
+  color: #606266 !important;
+}
+
+/* 选中项的颜色（可选，通常是蓝色） */
+.el-select-dropdown__item.selected {
+  color: #409EFF !important;
+  font-weight: 700;
+}
 /* 修正 Twikoo 在 el-card 内的样式 */
 #twikoo-comment .tk-main {
   background-color: transparent !important;
@@ -889,3 +906,4 @@ export default {
   display: none !important;
 }
 </style>
+
