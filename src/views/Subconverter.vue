@@ -327,11 +327,11 @@ const blogLink = process.env.VUE_APP_BLOG_LINK
 const downld = 'http://' + window.location.host + '/download.html'
 
 export default {
-data() {
+  data() {
     return {
       showComments: false,
       twikooInitialized: false,
-      isDarkMode: false,
+      isDarkMode: false, // 【修改】新增状态
       backendVersion: "",
       centerDialogVisible: false,
       activeName: 'first',
@@ -342,7 +342,6 @@ data() {
         shortTypes: { "v1.mk": "https://v1.mk/short", "d1.mk": "https://d1.mk/short", "dlj.tf": "https://dlj.tf/short", "suo.yt": "https://suo.yt/short" },
         customBackend: { "周润发HK后端【由YXVM赞助服务】": "https://subapi.zrfme.com", "周润发US后端【Phala Cloud】": "https://1060e98895bedf43d3d738e3b7fc9120a0cbbbcf-15051.dstack-prod8.phala.network", "CM负载均衡后端【vless reality+hy1+hy2】": "https://subapi.cmliussss.net", "CM应急备用后端【vless reality+hy1+hy2】": "https://subapi.fxxk.dedyn.io", "肥羊增强型后端【vless reality+hy1+hy2】": "https://url.v1.mk", "肥羊备用后端【vless reality+hy1+hy2】": "https://sub.d1.mk", nameless13提供: "https://www.nameless13.com", subconverter作者提供: "https://sub.xeton.dev", "sub-web作者提供": "https://api.wcc.best", "920后端": "https://sub.xjz.im", "Sublink后端（歪兔）": "https://api.sublink.dev", "SoCloud 提供": "https://api.subcsub.com" },
         backendOptions: [ { value: "https://subapi.zrfme.com" }, { value: "https://1060e98895bedf43d3d738e3b7fc9120a0cbbbcf-15051.dstack-prod8.phala.network" }, { value: "https://subapi.cmliussss.net" }, { value: "https://subapi.fxxk.dedyn.io" }, { value: "https://url.v1.mk" }, { value: "https://sub.d1.mk" }, { value: "https://www.nameless13.com" }, { value: "https://sub.xeton.dev" }, { value: "https://api.wcc.best" }, { value: "https://sub.xjz.im" }, { value: "https://api.sublink.dev" }, { value: "https://api.subcsub.com" } ],
-        // [MODIFIED] Cleared all old rules, added only the requested one
         remoteConfig: [
           {
             label: "默认规则",
@@ -355,8 +354,7 @@ data() {
           }
         ]
       },
-      // [MODIFIED] Set default backend to url.v1.mk and default remoteConfig to the new rule
-      form: { sourceSubUrl: "", clientType: "", customBackend: this.getUrlParam() == "" ? "https://url.v1.mk" : this.getUrlParam(), shortType: "https://v1.mk/short", remoteConfig: "https://cf.buliang0.cf/clash-rules/nodnsleak.ini", excludeRemarks: "", includeRemarks: "", filename: "", rename: "", devid: "", interval: "", emoji: true, nodeList: false, extraset: false, tls13: false, udp: false, xudp: false, tfo: false, sort: false, expand: true, scv: false, fdn: false, appendType: false, insert: false, new_name: true, tpl: { surge: { doh: false }, clash: { doh: false }, singbox: { ipv6: false } } },
+      form: { sourceSubUrl: "", clientType: "", customBackend: this.getUrlParam() == "" ? "https://subapi.zrfme.com" : this.getUrlParam(), shortType: "https://v1.mk/short", remoteConfig: "https://raw.githubusercontent.com/cmliu/ACL4SSR/main/Clash/config/ACL4SSR_Online.ini", excludeRemarks: "", includeRemarks: "", filename: "", rename: "", devid: "", interval: "", emoji: true, nodeList: false, extraset: false, tls13: false, udp: false, xudp: false, tfo: false, sort: false, expand: true, scv: false, fdn: false, appendType: false, insert: false, new_name: true, tpl: { surge: { doh: false }, clash: { doh: false }, singbox: { ipv6: false } } },
       loading1: false,
       loading2: false,
       loading3: false,
@@ -374,7 +372,7 @@ data() {
       sampleConfig: remoteConfigSample
     };
   },
-  
+
   watch: {
     showComments(newValue) {
       if (newValue === true && !this.twikooInitialized) {
@@ -891,6 +889,3 @@ data() {
   display: none !important;
 }
 </style>
-
-
-
