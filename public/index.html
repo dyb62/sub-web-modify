@@ -191,7 +191,8 @@
                                 <i class="ri-delete-bin-line"></i> 清空
                             </button>
                         </div>
-                        <textarea v-model="form.url" class="w-full h-28 input-glass rounded-xl p-4 text-sm resize-none font-mono placeholder-slate-500/70" placeholder="在此粘贴您的机场订阅链接..."></textarea>
+                        <textarea v-model="form.url" class="w-full h-28 input-glass rounded-xl p-4 text-sm resize-none font-mono placeholder-slate-500/70" placeholder="在此粘贴您的机场订阅链接...
+支持多行输入"></textarea>
                     </div>
 
                     <!-- 选项网格 -->
@@ -361,7 +362,15 @@
                     shortUrl.value = '' 
                     const params = new URLSearchParams()
                     params.append('target', form.target)
-                    params.append('url', form.url.trim())
+                    
+                    // 修复多行输入问题：将换行符 \n 替换为 |
+                    const processedUrl = form.url
+                        .split(/[\n\r]+/)             // 按换行符分割
+                        .map(line => line.trim())     // 去除每一行的前后空格
+                        .filter(line => line.length > 0) // 过滤空行
+                        .join('|')                    // 用 | 连接
+
+                    params.append('url', processedUrl)
                     params.append('emoji', form.emoji)
                     params.append('udp', form.udp)
                     params.append('scv', form.scv)
