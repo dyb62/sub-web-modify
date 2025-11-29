@@ -326,16 +326,14 @@
 
                 // 核心配置
                 const backends = [
-                    { name: '默认: 肥羊增强型 (v1.mk)', url: 'https://url.v1.mk/sub?' },
-                    { name: '备用1: 周润发HK后端', url: 'https://subapi.zrfme.com/sub?' },
-                    { name: '备用2: 肥羊备用 (d1.mk)', url: 'https://sub.d1.mk/sub?' }
+                    { name: '周润发HK后端', url: 'https://subapi.zrfme.com/sub?' },
+                    { name: '肥羊增强型', url: 'https://url.v1.mk/sub?' },
+                    { name: '肥羊备用', url: 'https://sub.d1.mk/sub?' }，
+                    { name: 'CM负载均衡后端', url: 'https://subapi.cmliussss.net/sub?' },
+                    { name: 'CM应急备用后端', url: 'https://subapi.fxxk.dedyn.io/sub?' },
                 ]
                 const configs = [
-                    { name: '定制: 不良林 无DNS泄露', url: 'https://cf.buliang0.cf/clash-rules/nodnsleak.ini' },
-                    { name: 'ACL4SSR_Online_Full', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full.ini' },
-                    { name: 'ACL4SSR_Online_Mini', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Mini.ini' },
-                    { name: '基础配置 (仅基础分流)', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online.ini' },
-                    { name: '无 (仅转换格式)', url: '' }
+                    { name: '定制: 不良林 无DNS泄露', url: 'https://cf.buliang0.cf/clash-rules/nodnsleak.ini' }
                 ]
 
                 const form = reactive({
