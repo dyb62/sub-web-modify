@@ -874,26 +874,27 @@ export default {
 </script>
 
 <style>
-/* 强制修改下拉菜单选项文字颜色为灰色 */
-.el-select-dropdown__item {
-  color: #606266 !important; /* 灰色字体 */
+/* 1. 修改下拉框整体背景为深灰色 */
+.el-select-dropdown {
+  background-color: #424242 !important; /* 深灰色背景 */
+  border: 1px solid #424242 !important;
 }
 
-/* 鼠标悬停时的样式 */
+/* 2. 确保选项文字颜色为白色 */
+.el-select-dropdown__item {
+  color: #ffffff !important;
+}
+
+/* 3. 鼠标悬停在选项上时的颜色（稍微变亮） */
 .el-select-dropdown__item.hover, 
 .el-select-dropdown__item:hover {
-  background-color: #f5f7fa !important;
-  color: #606266 !important;
+  background-color: #585858 !important;
 }
 
-/* 选中项的颜色（可选，通常是蓝色） */
-.el-select-dropdown__item.selected {
-  color: #409EFF !important;
-  font-weight: 700;
-}
-/* 修正 Twikoo 在 el-card 内的样式 */
-#twikoo-comment .tk-main {
-  background-color: transparent !important;
+/* 4. 修复下拉框顶部的小三角箭头颜色，让它也变成深灰色 */
+.el-popper[x-placement^=bottom] .popper__arrow,
+.el-popper[x-placement^=bottom] .popper__arrow::after {
+  border-bottom-color: #424242 !important;
 }
 
 /* 
@@ -906,4 +907,5 @@ export default {
   display: none !important;
 }
 </style>
+
 
