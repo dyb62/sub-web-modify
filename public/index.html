@@ -1,35 +1,549 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="zh-CN" class="dark">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-  <link rel="stylesheet" href="/css/main.css">
-  <title>ZRF.ME | 在线订阅转换工具</title>
-  <!-- 注释 
-    <meta name="baidu-site-verification" content="codeva-HnQYbN6Uq0" />
-    <meta name="google-site-verification" content="ICRNFS2L5_er1nbSKBZEsQC2z-laLOQ4W2XPkys8maE" /> -->
-  <meta name="keywords"
-    content="全网最漂亮的订阅转换,暗黑模式,Sing-Box转换,Sing-Box配置,Clash订阅转SingBox,Quantumult X,Surge,Shadowrocket,订阅转换" />
-  <meta name="description"
-    content="全网最漂亮的订阅转换,暗黑模式,Sing-Box转换,Sing-Box配置,Clash订阅转SingBox,Quantumult X,Surge,Shadowrocket,订阅转换" />
-  <meta name="color-scheme" content="light dark">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SubConvert Pro - 终极美化版</title>
+    <!-- 引入 Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 500: '#3b82f6', 600: '#2563eb' }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s ease-out',
+                        'slide-in-left': 'slideInLeft 0.8s ease-out',
+                        'spin-slow': 'spin 8s linear infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideInLeft: {
+                            '0%': { opacity: '0', transform: 'translateX(-50px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* 核心背景设置 */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #0f172a;
+            overflow-x: hidden;
+        }
+
+        /* 背景层 */
+        .bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-image: url('https://img.qlqqs.com/b/2025/11/28/692964b43686e.png');
+            background-size: cover;
+            background-position: center top; 
+            background-repeat: no-repeat;
+            filter: brightness(0.85); 
+        }
+
+        /* 装饰层 */
+        .overlay-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(to right, rgba(15, 23, 42, 0.2), rgba(15, 23, 42, 0.7)); 
+        }
+
+        .character-img {
+            max-height: 85vh;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.3));
+            transition: transform 0.3s ease;
+        }
+        .character-img:hover {
+            transform: scale(1.01);
+        }
+
+        /* 毛玻璃卡片样式 */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.8); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-glass {
+            background: rgba(0, 0, 0, 0.3); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .input-glass:focus {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3);
+            outline: none;
+        }
+        
+        /* 下拉框选项样式优化 */
+        select option {
+            background-color: #1e293b;
+            color: white;
+            padding: 10px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.4);
+        }
+    </style>
 </head>
+<body class="text-slate-200">
 
-<body>
-  <section id="canvas-show" class="canvas-wrap">
-    <div id="canvas" class="gradient"></div>
-  </section>
-  <div id="app"></div>
-  <script src="/js/jquery.min.js"></script>
-  <script src="/js/three.min.js"></script>
-  <script src="/js/projector.js"></script>
-  <script src="/js/canvas-renderer.js"></script>
-  <script src="/js/3d-lines-animation.js"></script>
-  <script src="/js/color.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.all.min.js"></script>
+    <!-- 背景层 -->
+    <div class="bg-layer"></div>
+    <div class="overlay-layer"></div>
+
+    <div id="app" class="relative min-h-screen flex items-center justify-center p-4 lg:p-8">
+        
+        <!-- 全局 Toast -->
+        <transition enter-active-class="transition ease-out duration-300" enter-from-class="opacity-0 translate-y-[-20px]" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-200" leave-from-class="opacity-100" leave-to-class="opacity-0 translate-y-[-20px]">
+            <div v-if="toast.show" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-[100] flex items-center gap-2 px-6 py-3 rounded-full bg-blue-600/90 backdrop-blur-md shadow-2xl shadow-blue-500/30 text-white text-sm font-bold border border-white/20">
+                <i class="ri-checkbox-circle-fill text-lg"></i>
+                <span>{{ toast.msg }}</span>
+            </div>
+        </transition>
+
+        <!-- 主布局容器 -->
+        <div class="container mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center h-full">
+            
+            <!-- 左侧：角色立绘 -->
+            <div class="hidden lg:flex lg:col-span-5 h-full flex-col justify-center items-center animate-slide-in-left relative">
+                <img src="https://img.qlqqs.com/b/2025/11/28/692964b43686e.png" alt="Character" class="character-img rounded-2xl">
+                
+                <div class="mt-8 text-center">
+                    <h2 class="text-4xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] tracking-wider">SubConvert <span class="text-blue-400">Pro</span></h2>
+                    <p class="text-blue-200/80 font-medium tracking-[0.2em] mt-2 uppercase text-sm">Universal Subscription Converter</p>
+                </div>
+            </div>
+
+            <!-- 右侧：功能操作区 -->
+            <div class="col-span-1 lg:col-span-7 w-full animate-fade-in-up">
+                
+                <div class="lg:hidden text-center mb-6">
+                    <h1 class="text-3xl font-black text-white drop-shadow-lg">SubConvert <span class="text-blue-400">Pro</span></h1>
+                </div>
+
+                <!-- 主卡片 -->
+                <div class="glass-panel rounded-3xl p-6 md:p-8 w-full max-w-3xl mx-auto">
+                    
+                    <!-- 顶部状态栏 -->
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+                         <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                                <i class="ri-settings-5-fill text-white text-xl animate-spin-slow"></i>
+                            </div>
+                            <span class="font-bold text-lg text-white">配置面板</span>
+                         </div>
+                         <div class="flex gap-2">
+                            <button @click="resetForm" class="px-3 py-1 rounded-full bg-slate-700/50 hover:bg-red-500/50 text-slate-300 text-xs font-bold transition-colors border border-white/10 flex items-center gap-1">
+                                <i class="ri-refresh-line"></i> 重置
+                            </button>
+                            <span class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-bold border border-blue-500/20 flex items-center gap-1">
+                                <i class="ri-cpu-line"></i> Full Core
+                            </span>
+                         </div>
+                    </div>
+
+                    <!-- 订阅链接输入 -->
+                    <div class="space-y-2 mb-5 group">
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm font-bold text-blue-300 flex items-center gap-2">
+                                <i class="ri-links-line"></i> 订阅链接 (必填)
+                            </label>
+                            <span class="text-xs text-slate-500">支持多行 / 多个链接</span>
+                        </div>
+                        <textarea v-model="form.url" class="w-full h-24 input-glass rounded-xl p-4 text-sm resize-none font-mono placeholder-slate-500/70 focus:h-32 transition-all" placeholder="在此粘贴您的机场订阅链接..."></textarea>
+                    </div>
+
+                    <!-- 选项网格 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                        <!-- 客户端 -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-400 ml-1 uppercase">客户端类型</label>
+                            <div class="relative">
+                                <select v-model="form.target" class="w-full h-11 input-glass rounded-xl px-4 text-sm appearance-none cursor-pointer font-medium hover:bg-white/5">
+                                    <option value="clash">Clash (推荐)</option>
+                                    <option value="singbox">Sing-Box</option>
+                                    <option value="clashr">ClashR</option>
+                                    <option value="v2ray">V2Ray</option>
+                                    <option value="surge&ver=4">Surge 4+</option>
+                                    <option value="loon">Loon</option>
+                                    <option value="ss">Shadowsocks</option>
+                                    <option value="surfboard">Surfboard</option>
+                                    <option value="quanx">Quantumult X</option>
+                                    <option value="mixed">Mixed (混合)</option>
+                                </select>
+                                <i class="ri-arrow-down-s-line absolute right-3 top-3 text-slate-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <!-- 后端 -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-400 ml-1 uppercase">后端服务</label>
+                            <div class="relative">
+                                <select v-model="form.backend" class="w-full h-11 input-glass rounded-xl px-4 text-sm appearance-none cursor-pointer font-medium hover:bg-white/5">
+                                    <option v-for="b in backends" :key="b.url" :value="b.url">{{ b.name }}</option>
+                                </select>
+                                <i class="ri-server-line absolute right-3 top-3 text-slate-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <!-- 远程配置 -->
+                        <div class="space-y-1.5 md:col-span-2">
+                            <div class="flex justify-between items-center">
+                                <label class="text-xs font-bold text-slate-400 ml-1 uppercase">远程配置 (规则)</label>
+                                <button @click="customConfigMode = !customConfigMode" class="text-xs text-blue-400 hover:text-white transition-colors">
+                                    {{ customConfigMode ? '选择列表' : '自定义URL' }}
+                                </button>
+                            </div>
+                            
+                            <div class="relative" v-if="!customConfigMode">
+                                <select v-model="form.config" class="w-full h-11 input-glass rounded-xl px-4 text-sm appearance-none cursor-pointer font-mono text-slate-300 hover:bg-white/5 truncate pr-8">
+                                    <option v-for="c in configs" :key="c.url" :value="c.url">{{ c.name }}</option>
+                                </select>
+                                <i class="ri-file-list-3-line absolute right-3 top-3 text-slate-400 pointer-events-none"></i>
+                            </div>
+                            <div class="relative" v-else>
+                                <input v-model="form.config" type="text" placeholder="输入自定义规则 URL..." class="w-full h-11 input-glass rounded-xl px-4 text-sm font-mono text-slate-300">
+                                <i class="ri-pencil-line absolute right-3 top-3 text-slate-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 高级选项 (折叠面板) -->
+                    <div class="mb-6 border border-white/5 rounded-2xl bg-black/20 overflow-hidden">
+                        <button @click="showAdvanced = !showAdvanced" class="w-full p-3 px-4 flex items-center justify-between bg-white/5 hover:bg-white/10 transition-colors">
+                            <span class="text-sm font-bold text-slate-300 flex items-center gap-2">
+                                <i class="ri-equalizer-line text-blue-400"></i> 高级过滤 & 选项
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <span v-if="!showAdvanced" class="text-xs text-slate-500 font-mono hidden sm:inline-block">点击展开更多设置</span>
+                                <i :class="showAdvanced ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line'" class="text-slate-400"></i>
+                            </div>
+                        </button>
+                        
+                        <div v-show="showAdvanced" class="p-4 space-y-4 border-t border-white/5">
+                            
+                            <!-- 节点过滤与重命名 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs text-slate-500 font-bold ml-1">包含节点 (正则)</label>
+                                    <input v-model="form.include" type="text" placeholder="例如: 港|HK|Hong" class="w-full h-9 rounded-lg px-3 text-sm input-glass font-mono">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs text-slate-500 font-bold ml-1">排除节点 (正则)</label>
+                                    <input v-model="form.exclude" type="text" placeholder="例如: 剩余|到期|重置" class="w-full h-9 rounded-lg px-3 text-sm input-glass font-mono">
+                                </div>
+                                <div class="space-y-1 md:col-span-2">
+                                    <label class="text-xs text-slate-500 font-bold ml-1">节点重命名 (正则)</label>
+                                    <input v-model="form.rename" type="text" placeholder="例如: `旧名@新名` 或 `去除文本@`" class="w-full h-9 rounded-lg px-3 text-sm input-glass font-mono">
+                                </div>
+                            </div>
+
+                            <div class="h-px bg-white/5 my-2"></div>
+
+                            <!-- 开关选项 -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                                <div v-for="opt in options" :key="opt.key" 
+                                     class="flex items-center justify-between p-2 rounded-lg border border-white/5 cursor-pointer transition-all hover:bg-white/5"
+                                     :class="form[opt.key] ? 'bg-blue-500/20 border-blue-500/30' : 'bg-transparent'"
+                                     @click="form[opt.key] = !form[opt.key]">
+                                    <span class="text-xs font-medium text-slate-300">{{ opt.label }}</span>
+                                    <!-- Toggle Switch UI -->
+                                    <div :class="form[opt.key] ? 'bg-blue-500' : 'bg-slate-600'" class="w-7 h-3.5 rounded-full relative transition-colors">
+                                        <div :class="form[opt.key] ? 'translate-x-3.5' : 'translate-x-0.5'" class="absolute top-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform shadow-sm"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 文件名输入 -->
+                            <div class="pt-2">
+                                <label class="block text-xs font-bold text-slate-500 mb-1.5 ml-1">自定义文件名</label>
+                                <input v-model="form.filename" type="text" placeholder="默认为空，选填" class="w-full h-9 rounded-lg px-3 text-sm input-glass">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 转换按钮 -->
+                    <button @click="generate" class="w-full py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 bg-[length:200%_auto] hover:bg-right transition-all duration-500 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/20 flex items-center justify-center gap-2 text-lg group ring-1 ring-white/20 transform hover:-translate-y-0.5 active:translate-y-0">
+                        <i class="ri-flashlight-fill group-hover:animate-pulse"></i> 一键极速转换
+                    </button>
+
+                    <!-- 结果区域 -->
+                    <div v-if="resultUrl" class="mt-6 pt-6 border-t border-white/10 animate-fade-in-up">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-bold text-white flex items-center gap-2">
+                                <i class="ri-check-double-line text-green-400"></i> 生成成功
+                            </h3>
+                            <a :href="resultUrl" target="_blank" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg transition-colors border border-white/10">
+                                立即导入 <i class="ri-external-link-line ml-1"></i>
+                            </a>
+                        </div>
+
+                        <div class="space-y-3">
+                            <!-- 长链接 -->
+                            <div class="relative group">
+                                <input type="text" readonly :value="resultUrl" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 pr-20 text-xs text-slate-400 font-mono outline-none focus:border-blue-500/50 transition-colors">
+                                <button @click="copy(resultUrl)" class="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-white/10 hover:bg-blue-600 text-slate-300 hover:text-white text-xs rounded-lg font-bold transition-all">复制</button>
+                            </div>
+
+                            <!-- 短链接 -->
+                            <div class="flex gap-2">
+                                <button @click="getShortUrl" :disabled="loadingShort || shortUrl" class="px-4 py-2 bg-slate-700/50 hover:bg-blue-600/80 disabled:opacity-50 text-white text-sm rounded-xl transition-all flex items-center justify-center gap-2 border border-white/10 shrink-0 min-w-[100px]">
+                                    <i v-if="loadingShort" class="ri-loader-4-line animate-spin"></i>
+                                    <i v-else class="ri-link-m"></i>
+                                    {{ shortUrl ? '已生成' : '转短链' }}
+                                </button>
+                                
+                                <div v-if="shortUrl" class="flex-1 relative animate-fade-in-up">
+                                    <input type="text" readonly :value="shortUrl" class="w-full h-full bg-blue-500/10 border border-blue-500/30 rounded-xl p-3 pr-20 text-sm text-blue-300 font-mono font-bold outline-none">
+                                    <button @click="copy(shortUrl)" class="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition-colors shadow-lg shadow-blue-500/20">
+                                        复制
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="text-center mt-6 text-slate-500/60 text-xs">
+                    <p>&copy; 2025 SubConvert Pro. Powered by Vue & Tailwind.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, reactive } = Vue
+
+        createApp({
+            setup() {
+                const showAdvanced = ref(false) // 默认折叠，保持界面清爽
+                const customConfigMode = ref(false)
+
+                // 核心后端列表
+                const backends = [
+                    { name: '肥羊增强型 (推荐)', url: 'https://url.v1.mk/sub?' },
+                    { name: '周润发HK后端', url: 'https://subapi.zrfme.com/sub?' },
+                    { name: 'D1.mk 备用', url: 'https://sub.d1.mk/sub?' },
+                    { name: 'CM 负载均衡', url: 'https://subapi.cmliussss.net/sub?' },
+                    { name: 'Fxxk Dedyn', url: 'https://subapi.fxxk.dedyn.io/sub?' }
+                ]
+                
+                // 扩充的规则库 (ACL4SSR)
+                const configs = [
+                    { name: '默认: ACL4SSR 标准版', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online.ini' },
+                    { name: '精简: ACL4SSR Mini', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Mini.ini' },
+                    { name: '推荐: 不良林 无DNS泄露', url: 'https://cf.buliang0.cf/clash-rules/nodnsleak.ini' },
+                    { name: '全能: ACL4SSR_Online_Full', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full.ini' },
+                    { name: '去广: ACL4SSR_Online_AdblockPlus', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_AdblockPlus.ini' },
+                    { name: '重度: ACL4SSR_Online_Full_AdblockPlus', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full_AdblockPlus.ini' },
+                    { name: '无测速: 无自动测速版', url: 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_NoAuto.ini' }
+                ]
+
+                const defaultForm = {
+                    url: '', target: 'clash', backend: backends[0].url, config: configs[0].url,
+                    emoji: true, udp: false, scv: true, nodeList: false, fdn: false, 
+                    sort: false, tfo: false,
+                    include: '', exclude: '', rename: '', filename: ''
+                }
+
+                const form = reactive({ ...defaultForm })
+                
+                // 完整的开关选项
+                const options = [
+                    { key: 'emoji', label: 'Emoji' },
+                    { key: 'udp', label: 'UDP 转发' },
+                    { key: 'scv', label: '跳过证书' },
+                    { key: 'tfo', label: 'TFO (TCP Fast Open)' },
+                    { key: 'nodeList', label: '输出节点列表' },
+                    { key: 'fdn', label: '过滤非法节点' },
+                    { key: 'sort', label: '节点排序' }
+                ]
+
+                const resultUrl = ref('')
+                const shortUrl = ref('')
+                const loadingShort = ref(false)
+                
+                const toast = reactive({ show: false, msg: '' })
+
+                const resetForm = () => {
+                    Object.assign(form, defaultForm)
+                    resultUrl.value = ''
+                    shortUrl.value = ''
+                    showToast('设置已重置')
+                }
+
+                const generate = () => {
+                    if (!form.url) return showToast('请先输入订阅链接！')
+                    
+                    shortUrl.value = '' 
+                    const params = new URLSearchParams()
+                    
+                    // 必填项
+                    params.append('target', form.target)
+                    
+                    // 处理订阅链接：支持多行，替换换行符为 |
+                    const processedUrl = form.url
+                        .split(/[\n\r]+/)
+                        .map(line => line.trim())
+                        .filter(line => line.length > 0)
+                        .join('|')
+                    params.append('url', processedUrl)
+                    
+                    // 规则配置
+                    if (form.config) params.append('config', form.config)
+
+                    // 布尔开关
+                    options.forEach(opt => {
+                         params.append(opt.key, form[opt.key])
+                    })
+                    
+                    // 别名修正: scv在后端参数通常是 scv, nodeList对应 list
+                    params.delete('nodeList') // 移除上面循环加的
+                    params.append('list', form.nodeList)
+
+                    // 文本过滤
+                    if (form.include) params.append('include', form.include)
+                    if (form.exclude) params.append('exclude', form.exclude)
+                    if (form.rename) params.append('rename', form.rename)
+                    if (form.filename) params.append('filename', form.filename)
+
+                    // 拼接基础 URL
+                    let baseUrl = form.backend
+                    if (!baseUrl.includes('?')) baseUrl += '?'
+                    else if (!baseUrl.endsWith('?') && !baseUrl.endsWith('&')) baseUrl += '&'
+
+                    resultUrl.value = baseUrl + params.toString()
+                    
+                    // 自动滚动到底部
+                    setTimeout(() => {
+                        const appDom = document.getElementById('app')
+                        window.scrollTo({ top: appDom.scrollHeight, behavior: 'smooth' })
+                    }, 100)
+                }
+
+                const getShortUrl = async () => {
+                    if (!resultUrl.value) return
+                    loadingShort.value = true
+                    try {
+                        // 优先使用 v1.mk 的短链服务
+                        let apiUrl = `https://url.v1.mk/short?longUrl=${encodeURIComponent(btoa(resultUrl.value))}`
+                        let res = await fetch(apiUrl)
+                        let data = await res.json()
+                        
+                        if (data.Code === 1 && data.ShortUrl) {
+                            shortUrl.value = data.ShortUrl
+                            showToast('短链生成成功')
+                        } else {
+                            // 备用：不 base64 尝试
+                            apiUrl = `https://url.v1.mk/short?longUrl=${encodeURIComponent(resultUrl.value)}`
+                            res = await fetch(apiUrl)
+                            data = await res.json()
+                            if (data.Code === 1 && data.ShortUrl) {
+                                shortUrl.value = data.ShortUrl
+                                showToast('短链生成成功')
+                            } else {
+                                showToast('生成失败: ' + (data.Message || '未知错误'))
+                            }
+                        }
+                    } catch (e) {
+                        showToast('网络请求失败')
+                        console.error(e)
+                    } finally {
+                        loadingShort.value = false
+                    }
+                }
+
+                const copy = (text) => {
+                    if(!text) return
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(text).then(() => {
+                            showToast('已复制到剪贴板')
+                        }).catch(() => fallbackCopy(text))
+                    } else {
+                        fallbackCopy(text)
+                    }
+                }
+
+                const fallbackCopy = (text) => {
+                    const textArea = document.createElement("textarea")
+                    textArea.value = text
+                    textArea.style.position = "fixed"
+                    textArea.style.left = "-9999px"
+                    document.body.appendChild(textArea)
+                    textArea.focus()
+                    textArea.select()
+                    try {
+                        document.execCommand('copy')
+                        showToast('已复制到剪贴板')
+                    } catch (err) {
+                        showToast('复制失败，请手动复制')
+                    }
+                    document.body.removeChild(textArea)
+                }
+
+                const showToast = (msg) => {
+                    toast.msg = msg
+                    toast.show = true
+                    setTimeout(() => toast.show = false, 2000)
+                }
+
+                return { 
+                    backends, configs, form, options, 
+                    resultUrl, shortUrl, loadingShort, toast, 
+                    showAdvanced, customConfigMode,
+                    generate, getShortUrl, copy, resetForm 
+                }
+            }
+        }).mount('#app')
+    </script>
 </body>
-
 </html>
