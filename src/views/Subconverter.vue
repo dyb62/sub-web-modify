@@ -352,7 +352,7 @@ export default {
               },
               {
                 label:"大黄鸭"
-                value:"https://raw.githubusercontent.com/mihomo-party-org/override-hub/refs/heads/main/yaml/ACL4SSR_Online_Full_WithIcon.yaml"
+                value:"https://raw.githubusercontent.com/zsokami/ACL4SSR/refs/heads/main/ACL4SSR_Online_Full_Mannix_No_DNS_Leak.ini"
               }
             ]
           }
@@ -893,6 +893,7 @@ export default {
   display: none !important;
 }
 </style>
+
 
 
 
