@@ -351,8 +351,8 @@ export default {
                 value: "https://cf.buliang0.cf/clash-rules/nodnsleak.ini"
               },
               {
-                label:"大黄鸭"
-                value:"https://raw.githubusercontent.com/zsokami/ACL4SSR/refs/heads/main/ACL4SSR_Online_Full_Mannix_No_DNS_Leak.ini"
+                label: "大黄鸭",
+                value: "https://raw.githubusercontent.com/zsokami/ACL4SSR/refs/heads/main/ACL4SSR_Online_Full_Mannix_No_DNS_Leak.ini"
               }
             ]
           }
@@ -893,6 +893,7 @@ export default {
   display: none !important;
 }
 </style>
+
 
 
 
