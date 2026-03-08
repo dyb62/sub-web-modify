@@ -192,12 +192,18 @@
                     <!-- 订阅链接输入 -->
                     <div class="space-y-2 mb-5 group">
                         <div class="flex justify-between items-center">
-                            <label class="text-sm font-bold text-blue-300 flex items-center gap-2">
-                                <i class="ri-links-line"></i> 订阅链接 (必填)
-                            </label>
+                            <div class="flex items-center gap-3">
+                                <label class="text-sm font-bold text-blue-300 flex items-center gap-2">
+                                    <i class="ri-links-line"></i> 订阅链接
+                                </label>
+                                <!-- 解析按钮 -->
+                                <button @click="parseUrl" class="text-xs bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 px-2 py-1 rounded-md transition-colors border border-purple-500/30 flex items-center gap-1" title="将长链接粘贴到下方，点击此按钮还原配置">
+                                    <i class="ri-magic-line"></i> 解析配置
+                                </button>
+                            </div>
                             <span class="text-xs text-slate-500">支持多行 / 多个链接</span>
                         </div>
-                        <textarea v-model="form.url" class="w-full h-24 input-glass rounded-xl p-4 text-sm resize-none font-mono placeholder-slate-500/70 focus:h-32 transition-all" placeholder="在此粘贴您的机场订阅链接..."></textarea>
+                        <textarea v-model="form.url" class="w-full h-24 input-glass rounded-xl p-4 text-sm resize-none font-mono placeholder-slate-500/70 focus:h-32 transition-all" placeholder="在此粘贴您的机场订阅链接，或粘贴已生成的长链接用于解析..."></textarea>
                     </div>
 
                     <!-- 选项网格 -->
@@ -413,6 +419,67 @@
                     showToast('设置已重置')
                 }
 
+                // 解析长链接功能
+                const parseUrl = () => {
+                    const rawUrl = form.url.trim()
+                    if (!rawUrl.includes('?') || !rawUrl.startsWith('http')) {
+                        return showToast('请在输入框粘贴有效的转换链接(长链)')
+                    }
+
+                    try {
+                        const urlObj = new URL(rawUrl)
+                        const params = urlObj.searchParams
+
+                        // 1. 还原订阅源链接 (将 | 替换回换行符)
+                        if (params.has('url')) {
+                            form.url = params.get('url').split('|').join('\n')
+                        }
+
+                        // 2. 还原基础参数
+                        if (params.has('target')) form.target = params.get('target')
+                        
+                        if (params.has('config')) {
+                            const cfgUrl = params.get('config')
+                            form.config = cfgUrl
+                            // 检查是否在预设列表中，不在则开启自定义模式
+                            const inList = configs.some(c => c.url === cfgUrl)
+                            customConfigMode.value = !inList
+                        }
+
+                        // 3. 还原高级筛选
+                        if (params.has('include')) form.include = params.get('include')
+                        if (params.has('exclude')) form.exclude = params.get('exclude')
+                        if (params.has('rename')) form.rename = params.get('rename')
+                        if (params.has('filename')) form.filename = params.get('filename')
+
+                        // 4. 还原开关 (注意 URL 参数是字符串 "true"/"false")
+                        const boolMap = {
+                            'emoji': 'emoji', 'scv': 'scv', 'udp': 'udp',
+                            'tfo': 'tfo', 'fdn': 'fdn', 'sort': 'sort',
+                            'list': 'nodeList'
+                        }
+                        for (const [paramKey, formKey] of Object.entries(boolMap)) {
+                            if (params.has(paramKey)) {
+                                form[formKey] = params.get(paramKey) === 'true'
+                            }
+                        }
+
+                        // 5. 尝试匹配后端 (简单的包含匹配)
+                        // 获取当前粘贴链接的 Base URL
+                        const currentBase = urlObj.origin + urlObj.pathname
+                        const matchedBackend = backends.find(b => currentBase.includes(b.url.replace('?', '').replace('&', '')))
+                        if (matchedBackend) {
+                            form.backend = matchedBackend.url
+                        }
+                        
+                        showToast('配置解析成功！')
+                        showAdvanced.value = true // 自动展开高级选项让用户确认
+                    } catch (e) {
+                        console.error(e)
+                        showToast('解析失败，链接格式错误')
+                    }
+                }
+
                 const generate = () => {
                     if (!form.url) return showToast('请先输入订阅链接！')
                     
@@ -532,7 +599,7 @@
                     backends, configs, form, options, 
                     resultUrl, shortUrl, loadingShort, toast, 
                     showAdvanced, customConfigMode,
-                    generate, getShortUrl, copy, resetForm 
+                    generate, getShortUrl, copy, resetForm, parseUrl
                 }
             }
         }).mount('#app')
