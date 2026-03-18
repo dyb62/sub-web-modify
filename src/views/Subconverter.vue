@@ -351,8 +351,8 @@ export default {
                 value: "https://cf.buliang0.cf/clash-rules/nodnsleak.ini"
               },
               {
-                label: "大黄鸭",
-                value: "https://raw.githubusercontent.com/mihomo-party-org/override-hub/refs/heads/main/yaml/ACL4SSR_Online_Full_WithIcon.yaml"
+                label: "NetSyo",
+                value: "https://raw.githubusercontent.com/dyb62/html/refs/heads/main/yaml"
               }
             ]
           }
