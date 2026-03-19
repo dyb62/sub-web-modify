@@ -352,7 +352,7 @@ export default {
               },
               {
                 label: "NetSyo",
-                value: "https://raw.githubusercontent.com/dyb62/html/refs/heads/main/yaml"
+                value: "https://raw.githubusercontent.com/dyb62/html/refs/heads/main/netsyo.yaml"
               }
             ]
           }
