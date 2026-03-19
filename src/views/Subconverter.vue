@@ -351,8 +351,8 @@ export default {
                 value: "https://cf.buliang0.cf/clash-rules/nodnsleak.ini"
               },
               {
-                label: "NetSyo",
-                value: "https://raw.githubusercontent.com/dyb62/html/refs/heads/main/netsyo.yaml"
+                label: "FlowCloud",
+                value: "https://subweb.s3.fr-par.scw.cloud/RemoteConfig/customized/flower.ini"
               }
             ]
           }
