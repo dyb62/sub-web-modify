@@ -533,8 +533,8 @@
                     if (!resultUrl.value) return
                     loadingShort.value = true
                     try {
-                        // 优先使用 v1.mk 的短链服务
-                        let apiUrl = `https://url.v1.mk/short?longUrl=${encodeURIComponent(btoa(resultUrl.value))}`
+                        // 优先使用 myurl 的短链服务
+                        let apiUrl = `https://myurl.7li7li.com/short?longUrl=${encodeURIComponent(btoa(resultUrl.value))}`
                         let res = await fetch(apiUrl)
                         let data = await res.json()
                         
@@ -543,7 +543,7 @@
                             showToast('短链生成成功')
                         } else {
                             // 备用：不 base64 尝试
-                            apiUrl = `https://url.v1.mk/short?longUrl=${encodeURIComponent(resultUrl.value)}`
+                            apiUrl = `https://d.001315.xyz/short?longUrl=${encodeURIComponent(resultUrl.value)}`
                             res = await fetch(apiUrl)
                             data = await res.json()
                             if (data.Code === 1 && data.ShortUrl) {
