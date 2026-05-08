@@ -529,33 +529,59 @@
                     }, 100)
                 }
 
+                const safeBase64 = (str) => {
+                    try {
+                        return btoa(str)
+                    } catch (e) {
+                        return btoa(unescape(encodeURIComponent(str)))
+                    }
+                }
+
                 const getShortUrl = async () => {
-                    if (!resultUrl.value) return
+                    if (!resultUrl.value) {
+                        showToast('请先生成长链接')
+                        return
+                    }
+                
                     loadingShort.value = true
                     try {
-                        // 优先使用 myurl 的短链服务
-                        let apiUrl = `https://myurl.7li7li.com/short?longUrl=${encodeURIComponent(btoa(resultUrl.value))}`
-                        let res = await fetch(apiUrl)
+                        // 方案1：myurl，按原项目方式 POST + FormData + base64
+                        let formData = new FormData()
+                        formData.append('longUrl', safeBase64(resultUrl.value))
+                
+                        let res = await fetch('https://myurl.7li7li.com/short', {
+                            method: 'POST',
+                            body: formData
+                        })
+                
                         let data = await res.json()
-                        
+
+                        if (data.Code === 1 && data.ShortUrl) {
+                            shortUrl.value = data.ShortUrl
+                            showToast('短链生成成功')
+                            return
+                        }
+                
+                        // 方案2：备用接口，也改成 POST
+                        formData = new FormData()
+                        formData.append('longUrl', resultUrl.value)
+
+                        res = await fetch('https://d.001315.xyz/short', {
+                            method: 'POST',
+                            body: formData
+                        })
+
+                        data = await res.json()
+
                         if (data.Code === 1 && data.ShortUrl) {
                             shortUrl.value = data.ShortUrl
                             showToast('短链生成成功')
                         } else {
-                            // 备用：不 base64 尝试
-                            apiUrl = `https://d.001315.xyz/short?longUrl=${encodeURIComponent(resultUrl.value)}`
-                            res = await fetch(apiUrl)
-                            data = await res.json()
-                            if (data.Code === 1 && data.ShortUrl) {
-                                shortUrl.value = data.ShortUrl
-                                showToast('短链生成成功')
-                            } else {
-                                showToast('生成失败: ' + (data.Message || '未知错误'))
-                            }
+                            showToast('生成失败: ' + (data.Message || '未知错误'))
                         }
                     } catch (e) {
-                        showToast('网络请求失败')
-                        console.error(e)
+                        console.error('短链生成失败:', e)
+                        showToast('短链请求失败，请检查接口是否可用或跨域是否放行')
                     } finally {
                         loadingShort.value = false
                     }
