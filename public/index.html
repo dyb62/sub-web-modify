@@ -41,7 +41,6 @@
     </script>
     
     <style>
-        /* 核心背景设置 */
         body {
             margin: 0;
             padding: 0;
@@ -51,7 +50,6 @@
             overflow-x: hidden;
         }
 
-        /* 背景层 */
         .bg-layer {
             position: fixed;
             top: 0;
@@ -66,7 +64,6 @@
             filter: brightness(0.85); 
         }
 
-        /* 装饰层 */
         .overlay-layer {
             position: fixed;
             top: 0;
@@ -88,7 +85,6 @@
             transform: scale(1.01);
         }
 
-        /* 毛玻璃卡片样式 */
         .glass-panel {
             background: rgba(15, 23, 42, 0.8); 
             backdrop-filter: blur(20px); 
@@ -134,13 +130,11 @@
 </head>
 <body class="text-slate-200">
 
-    <!-- 背景层 -->
     <div class="bg-layer"></div>
     <div class="overlay-layer"></div>
 
     <div id="app" class="relative min-h-screen flex items-center justify-center p-4 lg:p-8">
         
-        <!-- 全局 Toast -->
         <transition enter-active-class="transition ease-out duration-300" enter-from-class="opacity-0 translate-y-[-20px]" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-200" leave-from-class="opacity-100" leave-to-class="opacity-0 translate-y-[-20px]">
             <div v-if="toast.show" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-[100] flex items-center gap-2 px-6 py-3 rounded-full bg-blue-600/90 backdrop-blur-md shadow-2xl shadow-blue-500/30 text-white text-sm font-bold border border-white/20">
                 <i class="ri-checkbox-circle-fill text-lg"></i>
@@ -148,10 +142,8 @@
             </div>
         </transition>
 
-        <!-- 主布局容器 -->
         <div class="container mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center h-full">
             
-            <!-- 左侧：角色立绘 -->
             <div class="hidden lg:flex lg:col-span-5 h-full flex-col justify-center items-center animate-slide-in-left relative">
                 <img src="https://img.qlqqs.com/b/2025/11/28/692964b43686e.png" alt="Character" class="character-img rounded-2xl">
                 
@@ -161,17 +153,14 @@
                 </div>
             </div>
 
-            <!-- 右侧：功能操作区 -->
             <div class="col-span-1 lg:col-span-7 w-full animate-fade-in-up">
                 
                 <div class="lg:hidden text-center mb-6">
                     <h1 class="text-3xl font-black text-white drop-shadow-lg">SubConvert <span class="text-blue-400">Pro</span></h1>
                 </div>
 
-                <!-- 主卡片 -->
                 <div class="glass-panel rounded-3xl p-6 md:p-8 w-full max-w-3xl mx-auto">
                     
-                    <!-- 顶部状态栏 -->
                     <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
                          <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
@@ -189,14 +178,12 @@
                          </div>
                     </div>
 
-                    <!-- 订阅链接输入 -->
                     <div class="space-y-2 mb-5 group">
                         <div class="flex justify-between items-center">
                             <div class="flex items-center gap-3">
                                 <label class="text-sm font-bold text-blue-300 flex items-center gap-2">
                                     <i class="ri-links-line"></i> 订阅链接
                                 </label>
-                                <!-- 解析按钮 -->
                                 <button @click="parseUrl" class="text-xs bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 px-2 py-1 rounded-md transition-colors border border-purple-500/30 flex items-center gap-1" title="将长链接粘贴到下方，点击此按钮还原配置">
                                     <i class="ri-magic-line"></i> 解析配置
                                 </button>
@@ -206,9 +193,7 @@
                         <textarea v-model="form.url" class="w-full h-24 input-glass rounded-xl p-4 text-sm resize-none font-mono placeholder-slate-500/70 focus:h-32 transition-all" placeholder="在此粘贴您的机场订阅链接，或粘贴已生成的长链接用于解析..."></textarea>
                     </div>
 
-                    <!-- 选项网格 -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-                        <!-- 客户端 -->
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-slate-400 ml-1 uppercase">客户端类型</label>
                             <div class="relative">
@@ -228,7 +213,6 @@
                             </div>
                         </div>
 
-                        <!-- 后端 -->
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-slate-400 ml-1 uppercase">后端服务</label>
                             <div class="relative">
@@ -239,7 +223,6 @@
                             </div>
                         </div>
 
-                        <!-- 远程配置 -->
                         <div class="space-y-1.5 md:col-span-2">
                             <div class="flex justify-between items-center">
                                 <label class="text-xs font-bold text-slate-400 ml-1 uppercase">远程配置 (规则)</label>
@@ -261,7 +244,6 @@
                         </div>
                     </div>
 
-                    <!-- 高级选项 (折叠面板) -->
                     <div class="mb-6 border border-white/5 rounded-2xl bg-black/20 overflow-hidden">
                         <button @click="showAdvanced = !showAdvanced" class="w-full p-3 px-4 flex items-center justify-between bg-white/5 hover:bg-white/10 transition-colors">
                             <span class="text-sm font-bold text-slate-300 flex items-center gap-2">
@@ -274,8 +256,6 @@
                         </button>
                         
                         <div v-show="showAdvanced" class="p-4 space-y-4 border-t border-white/5">
-                            
-                            <!-- 节点过滤与重命名 -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="space-y-1">
                                     <label class="text-xs text-slate-500 font-bold ml-1">包含节点 (正则)</label>
@@ -293,21 +273,18 @@
 
                             <div class="h-px bg-white/5 my-2"></div>
 
-                            <!-- 开关选项 -->
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                                 <div v-for="opt in options" :key="opt.key" 
                                      class="flex items-center justify-between p-2 rounded-lg border border-white/5 cursor-pointer transition-all hover:bg-white/5"
                                      :class="form[opt.key] ? 'bg-blue-500/20 border-blue-500/30' : 'bg-transparent'"
                                      @click="form[opt.key] = !form[opt.key]">
                                     <span class="text-xs font-medium text-slate-300">{{ opt.label }}</span>
-                                    <!-- Toggle Switch UI -->
                                     <div :class="form[opt.key] ? 'bg-blue-500' : 'bg-slate-600'" class="w-7 h-3.5 rounded-full relative transition-colors">
                                         <div :class="form[opt.key] ? 'translate-x-3.5' : 'translate-x-0.5'" class="absolute top-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform shadow-sm"></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 文件名输入 -->
                             <div class="pt-2">
                                 <label class="block text-xs font-bold text-slate-500 mb-1.5 ml-1">自定义文件名</label>
                                 <input v-model="form.filename" type="text" placeholder="默认为空，选填" class="w-full h-9 rounded-lg px-3 text-sm input-glass">
@@ -315,12 +292,10 @@
                         </div>
                     </div>
 
-                    <!-- 转换按钮 -->
                     <button @click="generate" class="w-full py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 bg-[length:200%_auto] hover:bg-right transition-all duration-500 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/20 flex items-center justify-center gap-2 text-lg group ring-1 ring-white/20 transform hover:-translate-y-0.5 active:translate-y-0">
                         <i class="ri-flashlight-fill group-hover:animate-pulse"></i> 一键极速转换
                     </button>
 
-                    <!-- 结果区域 -->
                     <div v-if="resultUrl" class="mt-6 pt-6 border-t border-white/10 animate-fade-in-up">
                         <div class="flex items-center justify-between mb-3">
                             <h3 class="font-bold text-white flex items-center gap-2">
@@ -332,18 +307,16 @@
                         </div>
 
                         <div class="space-y-3">
-                            <!-- 长链接 -->
                             <div class="relative group">
                                 <input type="text" readonly :value="resultUrl" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 pr-20 text-xs text-slate-400 font-mono outline-none focus:border-blue-500/50 transition-colors">
                                 <button @click="copy(resultUrl)" class="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-white/10 hover:bg-blue-600 text-slate-300 hover:text-white text-xs rounded-lg font-bold transition-all">复制</button>
                             </div>
 
-                            <!-- 短链接 -->
                             <div class="flex gap-2">
-                                <button @click="getShortUrl" :disabled="loadingShort || shortUrl" class="px-4 py-2 bg-slate-700/50 hover:bg-blue-600/80 disabled:opacity-50 text-white text-sm rounded-xl transition-all flex items-center justify-center gap-2 border border-white/10 shrink-0 min-w-[100px]">
+                                <button @click="getShortUrl" :disabled="loadingShort || !resultUrl" class="px-4 py-2 bg-slate-700/50 hover:bg-blue-600/80 disabled:opacity-50 text-white text-sm rounded-xl transition-all flex items-center justify-center gap-2 border border-white/10 shrink-0 min-w-[100px]">
                                     <i v-if="loadingShort" class="ri-loader-4-line animate-spin"></i>
                                     <i v-else class="ri-link-m"></i>
-                                    {{ shortUrl ? '已生成' : '转短链' }}
+                                    {{ loadingShort ? '生成中...' : '转短链' }}
                                 </button>
                                 
                                 <div v-if="shortUrl" class="flex-1 relative animate-fade-in-up">
@@ -370,38 +343,40 @@
 
         createApp({
             setup() {
-                const showAdvanced = ref(false) // 默认折叠，保持界面清爽
+                const showAdvanced = ref(false)
                 const customConfigMode = ref(false)
-            const safeBase64 = (str) => {
-                try {
-                    return btoa(str)
-                } catch (e) {
-                    return btoa(unescape(encodeURIComponent(str)))
-                }
-            }
-                // 核心后端列表 (已精简)
+
                 const backends = [
                     { name: '自营后端', url: 'https://subapi.xunyou.de5.net/sub?' },
                     { name: '7li7li', url: 'https://subapi.7li7li.com/sub?' },
                     { name: '周润发HK后端', url: 'https://subapi.zrfme.com/sub?' }
                 ]
                 
-                // 规则配置 (已精简)
                 const configs = [
                     { name: '定制: FlowCloud', url: 'https://subweb.s3.fr-par.scw.cloud/RemoteConfig/customized/flower.ini' },
                     { name: '定制: 不良林 无DNS泄露', url: 'https://cf.buliang0.cf/clash-rules/nodnsleak.ini' }
                 ]
 
                 const defaultForm = {
-                    url: '', target: 'clash', backend: backends[0].url, config: configs[0].url,
-                    emoji: true, udp: false, scv: true, nodeList: false, fdn: false, 
-                    sort: false, tfo: false,
-                    include: '', exclude: '', rename: '', filename: ''
+                    url: '',
+                    target: 'clash',
+                    backend: backends[0].url,
+                    config: configs[0].url,
+                    emoji: true,
+                    udp: false,
+                    scv: true,
+                    nodeList: false,
+                    fdn: false,
+                    sort: false,
+                    tfo: false,
+                    include: '',
+                    exclude: '',
+                    rename: '',
+                    filename: ''
                 }
 
                 const form = reactive({ ...defaultForm })
                 
-                // 完整的开关选项
                 const options = [
                     { key: 'emoji', label: 'Emoji' },
                     { key: 'udp', label: 'UDP 转发' },
@@ -415,124 +390,23 @@
                 const resultUrl = ref('')
                 const shortUrl = ref('')
                 const loadingShort = ref(false)
-                
                 const toast = reactive({ show: false, msg: '' })
+
+                const showToast = (msg) => {
+                    toast.msg = msg
+                    toast.show = true
+                    setTimeout(() => {
+                        toast.show = false
+                    }, 2000)
+                }
 
                 const resetForm = () => {
                     Object.assign(form, defaultForm)
                     resultUrl.value = ''
                     shortUrl.value = ''
+                    customConfigMode.value = false
+                    showAdvanced.value = false
                     showToast('设置已重置')
-                }
-
-                // 解析长链接功能
-                const parseUrl = () => {
-                    const rawUrl = form.url.trim()
-                    if (!rawUrl.includes('?') || !rawUrl.startsWith('http')) {
-                        return showToast('请在输入框粘贴有效的转换链接(长链)')
-                    }
-
-                    try {
-                        const urlObj = new URL(rawUrl)
-                        const params = urlObj.searchParams
-
-                        // 1. 还原订阅源链接 (将 | 替换回换行符)
-                        if (params.has('url')) {
-                            form.url = params.get('url').split('|').join('\n')
-                        }
-
-                        // 2. 还原基础参数
-                        if (params.has('target')) form.target = params.get('target')
-                        
-                        if (params.has('config')) {
-                            const cfgUrl = params.get('config')
-                            form.config = cfgUrl
-                            // 检查是否在预设列表中，不在则开启自定义模式
-                            const inList = configs.some(c => c.url === cfgUrl)
-                            customConfigMode.value = !inList
-                        }
-
-                        // 3. 还原高级筛选
-                        if (params.has('include')) form.include = params.get('include')
-                        if (params.has('exclude')) form.exclude = params.get('exclude')
-                        if (params.has('rename')) form.rename = params.get('rename')
-                        if (params.has('filename')) form.filename = params.get('filename')
-
-                        // 4. 还原开关 (注意 URL 参数是字符串 "true"/"false")
-                        const boolMap = {
-                            'emoji': 'emoji', 'scv': 'scv', 'udp': 'udp',
-                            'tfo': 'tfo', 'fdn': 'fdn', 'sort': 'sort',
-                            'list': 'nodeList'
-                        }
-                        for (const [paramKey, formKey] of Object.entries(boolMap)) {
-                            if (params.has(paramKey)) {
-                                form[formKey] = params.get(paramKey) === 'true'
-                            }
-                        }
-
-                        // 5. 尝试匹配后端 (简单的包含匹配)
-                        // 获取当前粘贴链接的 Base URL
-                        const currentBase = urlObj.origin + urlObj.pathname
-                        const matchedBackend = backends.find(b => currentBase.includes(b.url.replace('?', '').replace('&', '')))
-                        if (matchedBackend) {
-                            form.backend = matchedBackend.url
-                        }
-                        
-                        showToast('配置解析成功！')
-                        showAdvanced.value = true // 自动展开高级选项让用户确认
-                    } catch (e) {
-                        console.error(e)
-                        showToast('解析失败，链接格式错误')
-                    }
-                }
-
-                const generate = () => {
-                    if (!form.url) return showToast('请先输入订阅链接！')
-                    
-                    shortUrl.value = '' 
-                    const params = new URLSearchParams()
-                    
-                    // 必填项
-                    params.append('target', form.target)
-                    
-                    // 处理订阅链接：支持多行，替换换行符为 |
-                    const processedUrl = form.url
-                        .split(/[\n\r]+/)
-                        .map(line => line.trim())
-                        .filter(line => line.length > 0)
-                        .join('|')
-                    params.append('url', processedUrl)
-                    
-                    // 规则配置
-                    if (form.config) params.append('config', form.config)
-
-                    // 布尔开关
-                    options.forEach(opt => {
-                         params.append(opt.key, form[opt.key])
-                    })
-                    
-                    // 别名修正: scv在后端参数通常是 scv, nodeList对应 list
-                    params.delete('nodeList') // 移除上面循环加的
-                    params.append('list', form.nodeList)
-
-                    // 文本过滤
-                    if (form.include) params.append('include', form.include)
-                    if (form.exclude) params.append('exclude', form.exclude)
-                    if (form.rename) params.append('rename', form.rename)
-                    if (form.filename) params.append('filename', form.filename)
-
-                    // 拼接基础 URL
-                    let baseUrl = form.backend
-                    if (!baseUrl.includes('?')) baseUrl += '?'
-                    else if (!baseUrl.endsWith('?') && !baseUrl.endsWith('&')) baseUrl += '&'
-
-                    resultUrl.value = baseUrl + params.toString()
-                    
-                    // 自动滚动到底部
-                    setTimeout(() => {
-                        const appDom = document.getElementById('app')
-                        window.scrollTo({ top: appDom.scrollHeight, behavior: 'smooth' })
-                    }, 100)
                 }
 
                 const safeBase64 = (str) => {
@@ -542,24 +416,179 @@
                         return btoa(unescape(encodeURIComponent(str)))
                     }
                 }
-                
+
+                const parseUrl = async () => {
+                    const rawUrl = form.url.trim()
+                    if (!rawUrl) {
+                        showToast('请先粘贴长链接或短链接')
+                        return
+                    }
+
+                    let finalUrl = rawUrl
+
+                    try {
+                        if (!rawUrl.startsWith('http')) {
+                            showToast('请在输入框粘贴有效链接')
+                            return
+                        }
+
+                        if (!rawUrl.includes('target=')) {
+                            try {
+                                const response = await fetch(rawUrl, {
+                                    method: 'GET',
+                                    redirect: 'follow'
+                                })
+                                finalUrl = response.url || rawUrl
+                            } catch (e) {
+                                console.error(e)
+                                showToast('短链接解析失败，请检查链接或跨域设置')
+                                return
+                            }
+                        }
+
+                        const urlObj = new URL(finalUrl)
+                        const params = urlObj.searchParams
+
+                        if (!params.has('target') && !params.has('url')) {
+                            showToast('未识别到有效配置参数')
+                            return
+                        }
+
+                        const backendBase = urlObj.origin + urlObj.pathname
+                        const normalizedBackendBase = backendBase.endsWith('/sub') ? backendBase + '?' : backendBase
+                        const matchedBackend = backends.find(b => {
+                            const candidate = b.url.replace(/[?&]+$/, '')
+                            return candidate === backendBase || candidate === backendBase.replace(/\/$/, '')
+                        })
+                        if (matchedBackend) {
+                            form.backend = matchedBackend.url
+                        } else {
+                            form.backend = normalizedBackendBase
+                        }
+
+                        if (params.has('target')) {
+                            const target = params.get('target')
+                            const ver = params.get('ver')
+                            if (target === 'surge') {
+                                form.target = ver ? `surge&ver=${ver}` : 'surge&ver=4'
+                            } else {
+                                form.target = target
+                            }
+                        }
+
+                        if (params.has('url')) {
+                            form.url = decodeURIComponent(params.get('url')).split('|').join('\n')
+                        }
+
+                        if (params.has('config')) {
+                            const cfgUrl = params.get('config')
+                            form.config = cfgUrl
+                            const inList = configs.some(c => c.url === cfgUrl)
+                            customConfigMode.value = !inList
+                        }
+
+                        if (params.has('include')) form.include = params.get('include')
+                        if (params.has('exclude')) form.exclude = params.get('exclude')
+                        if (params.has('rename')) form.rename = params.get('rename')
+                        if (params.has('filename')) form.filename = params.get('filename')
+
+                        const boolMap = {
+                            emoji: 'emoji',
+                            scv: 'scv',
+                            udp: 'udp',
+                            tfo: 'tfo',
+                            fdn: 'fdn',
+                            sort: 'sort',
+                            list: 'nodeList'
+                        }
+
+                        Object.entries(boolMap).forEach(([paramKey, formKey]) => {
+                            if (params.has(paramKey)) {
+                                form[formKey] = params.get(paramKey) === 'true'
+                            }
+                        })
+
+                        showAdvanced.value = true
+                        resultUrl.value = finalUrl
+                        shortUrl.value = ''
+                        showToast('配置解析成功！')
+                    } catch (e) {
+                        console.error(e)
+                        showToast('解析失败，链接格式错误')
+                    }
+                }
+
+                const generate = () => {
+                    if (!form.url.trim()) {
+                        showToast('请先输入订阅链接！')
+                        return
+                    }
+                    
+                    shortUrl.value = ''
+                    const params = new URLSearchParams()
+                    
+                    if (form.target.includes('&ver=')) {
+                        const [targetPart, verPart] = form.target.split('&')
+                        params.append('target', targetPart)
+                        const verValue = verPart.split('=')[1]
+                        if (verValue) params.append('ver', verValue)
+                    } else {
+                        params.append('target', form.target)
+                    }
+                    
+                    const processedUrl = form.url
+                        .split(/[\n\r|]+/)
+                        .map(line => line.trim())
+                        .filter(line => line.length > 0)
+                        .join('|')
+
+                    params.append('url', processedUrl)
+                    
+                    if (form.config) params.append('config', form.config)
+
+                    options.forEach(opt => {
+                        if (opt.key !== 'nodeList') {
+                            params.append(opt.key, String(form[opt.key]))
+                        }
+                    })
+                    params.append('list', String(form.nodeList))
+
+                    if (form.include) params.append('include', form.include)
+                    if (form.exclude) params.append('exclude', form.exclude)
+                    if (form.rename) params.append('rename', form.rename)
+                    if (form.filename) params.append('filename', form.filename)
+
+                    let baseUrl = form.backend.trim()
+                    if (!baseUrl.includes('?')) {
+                        baseUrl += '?'
+                    } else if (!baseUrl.endsWith('?') && !baseUrl.endsWith('&')) {
+                        baseUrl += '&'
+                    }
+
+                    resultUrl.value = baseUrl + params.toString()
+                    
+                    setTimeout(() => {
+                        const appDom = document.getElementById('app')
+                        window.scrollTo({ top: appDom.scrollHeight, behavior: 'smooth' })
+                    }, 100)
+                }
+
                 const getShortUrl = async () => {
                     if (!resultUrl.value) {
                         showToast('请先生成长链接')
                         return
                     }
-                
+
                     loadingShort.value = true
                     try {
-                        // 方案1：myurl，按原项目方式 POST + FormData + base64
                         let formData = new FormData()
                         formData.append('longUrl', safeBase64(resultUrl.value))
-                
+
                         let res = await fetch('https://myurl.7li7li.com/short', {
                             method: 'POST',
                             body: formData
                         })
-                                
+
                         let data = await res.json()
 
                         if (data.Code === 1 && data.ShortUrl) {
@@ -567,11 +596,10 @@
                             showToast('短链生成成功')
                             return
                         }
-                
-                        // 方案2：备用接口，也改成 POST
+
                         formData = new FormData()
                         formData.append('longUrl', resultUrl.value)
-                
+
                         res = await fetch('https://d.001315.xyz/short', {
                             method: 'POST',
                             body: formData
@@ -594,10 +622,10 @@
                 }
 
                 const fallbackCopy = (text) => {
-                    const textArea = document.createElement("textarea")
+                    const textArea = document.createElement('textarea')
                     textArea.value = text
-                    textArea.style.position = "fixed"
-                    textArea.style.left = "-9999px"
+                    textArea.style.position = 'fixed'
+                    textArea.style.left = '-9999px'
                     document.body.appendChild(textArea)
                     textArea.focus()
                     textArea.select()
@@ -610,17 +638,35 @@
                     document.body.removeChild(textArea)
                 }
 
-                const showToast = (msg) => {
-                    toast.msg = msg
-                    toast.show = true
-                    setTimeout(() => toast.show = false, 2000)
+                const copy = (text) => {
+                    if (!text) return
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(text)
+                            .then(() => {
+                                showToast('已复制到剪贴板')
+                            })
+                            .catch(() => fallbackCopy(text))
+                    } else {
+                        fallbackCopy(text)
+                    }
                 }
 
                 return { 
-                    backends, configs, form, options, 
-                    resultUrl, shortUrl, loadingShort, toast, 
-                    showAdvanced, customConfigMode,
-                    generate, getShortUrl, copy, resetForm, parseUrl
+                    backends,
+                    configs,
+                    form,
+                    options, 
+                    resultUrl,
+                    shortUrl,
+                    loadingShort,
+                    toast, 
+                    showAdvanced,
+                    customConfigMode,
+                    generate,
+                    getShortUrl,
+                    copy,
+                    resetForm,
+                    parseUrl
                 }
             }
         }).mount('#app')
