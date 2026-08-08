@@ -340,7 +340,7 @@ export default {
       options: {
         clientTypes: { Clash: "clash", "Surge4/5": "surge&ver=4", "Sing-Box": "singbox", V2Ray: "v2ray", Trojan: "trojan", ShadowsocksR: "ssr", "混合订阅（mixed）": "mixed", Surfboard: "surfboard", Quantumult: "quan", "Quantumult X": "quanx", Loon: "loon", Mellow: "mellow", Surge3: "surge&ver=3", Surge2: "surge&ver=2", ClashR: "clashr", "Shadowsocks(SIP002)": "ss", "Shadowsocks Android(SIP008)": "sssub", ShadowsocksD: "ssd", "自动判断客户端": "auto" },
         shortTypes: { "myurl": "https://myurl.7li7li.com/short", "zrf": "https://d.001315.xyz/short" },
-        customBackend: { "周润发HK后端【由YXVM赞助服务】": "https://subapi.zrfme.com", "自营后端": "https://subapi.xunyou.de5.net","7li7li": "https://subapi.7li7li.com" },
+        customBackend: { "周润发HK后端【由YXVM赞助服务】": "https://subapi.zrfme.com", "自营后端": "https://subapi.xunyou.de5.net","7li7li": "https://subweb.7li7li.com" },
         remoteConfig: [
           {
             label: "默认规则",
