@@ -350,6 +350,11 @@ export default {
                 value: "https://cf.buliang0.cf/clash-rules/nodnsleak.ini"
               },
               {
+                label: "LinkCube",
+                value:
+                  "https://subweb.s3.fr-par.scw.cloud/RemoteConfig/customized/convenience.ini"
+              },
+              {
                 label: "FlowCloud",
                 value: "https://subweb.s3.fr-par.scw.cloud/RemoteConfig/customized/flower.ini"
               }
